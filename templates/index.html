@@ -3,48 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>面白い単語ジェネレーター</title>
+    <title>ニックネームジェネレーター</title>
     <style>
-        body { font-family: sans-serif; text-align: center; margin-top: 50px; background-color: #f0f4f8; }
-        h1 { color: #333; }
-        #word-container { margin: 30px; padding: 20px; background-color: #fff; border-radius: 8px; min-height: 50px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        #word { font-size: 1.5em; font-weight: bold; color: #007bff; }
-        button { padding: 10px 20px; font-size: 1em; color: #fff; background-color: #007bff; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; }
-        button:hover { background-color: #0056b3; }
-        #loading { display: none; }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #f4f7f6; color: #333; }
+        h1 { color: #2c3e50; }
+        #container { max-width: 500px; margin: 0 auto; padding: 20px; }
+        #name-input { width: 80%; padding: 12px; font-size: 1em; border-radius: 5px; border: 1px solid #ccc; margin-bottom: 15px; }
+        button { padding: 12px 25px; font-size: 1em; color: #fff; background-color: #3498db; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; }
+        button:hover { background-color: #2980b9; }
+        #result-container { margin-top: 30px; padding: 20px; background-color: #fff; border-radius: 8px; min-height: 100px; line-height: 1.6; text-align: left; box-shadow: 0 4px 6px rgba(0,0,0,0.1); white-space: pre-wrap; }
+        #loading { display: none; color: #7f8c8d; }
     </style>
 </head>
 <body>
-    <h1>面白い単語ジェネレーター</h1>
-    <button id="generate-btn">面白い単語を1つ生成して</button>
-    <div id="word-container">
-        <p id="word">ここに単語が表示されます</p>
-        <p id="loading">生成中...</p>
+    <div id="container">
+        <h1>ニックネームジェネレーター</h1>
+        <input type="text" id="name-input" placeholder="名前や苗字を入力（例：田中）">
+        <br>
+        <button id="generate-btn">面白いニックネームを3つ考えて</button>
+        
+        <div id="result-container">
+            <p id="result-text">ここにニックネームが表示されます</p>
+            <p id="loading">生成中...</p>
+        </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
-            const wordElement = document.getElementById('word');
+            const nameInput = document.getElementById('name-input');
+            const name = nameInput.value;
+
+            // 名前が入力されているかチェック
+            if (!name.trim()) {
+                alert('名前を入力してください！');
+                return;
+            }
+
+            const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
             const button = document.getElementById('generate-btn');
 
-            wordElement.style.display = 'none';
+            resultText.style.display = 'none';
             loadingElement.style.display = 'block';
             button.disabled = true;
 
             try {
-                const response = await fetch('/generate', { method: 'POST' });
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    // 入力された名前をJSON形式でバックエンドに送る
+                    body: JSON.stringify({ name: name })
+                });
+
                 const data = await response.json();
 
-                if (data.word) {
-                    wordElement.textContent = data.word;
+                if (data.nickname) {
+                    resultText.textContent = data.nickname;
                 } else {
-                    wordElement.textContent = 'エラーが発生しました。';
+                    resultText.textContent = 'エラーが発生しました。';
                 }
             } catch (error) {
-                wordElement.textContent = '通信エラーです。';
+                resultText.textContent = '通信エラーです。';
             } finally {
-                wordElement.style.display = 'block';
+                resultText.style.display = 'block';
                 loadingElement.style.display = 'none';
                 button.disabled = false;
             }
