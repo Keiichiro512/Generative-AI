@@ -2,6 +2,7 @@ import os
 import google.generativeai as genai
 from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv
+from datetime import datetime
 
 load_dotenv()
 
@@ -12,36 +13,31 @@ try:
     model = genai.GenerativeModel('gemini-1.5-flash')
 except Exception as e:
     print(f"APIキーの設定でエラーが発生しました: {e}")
-    # アプリケーションを終了させるか、エラーページを表示するなどの処理が必要
-    # ここでは単純にプリントしていますが、本番環境ではより丁寧な処理が必要です。
 
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# POSTメソッドは維持しつつ、リクエストボディは使わない
 @app.route('/generate', methods=['POST'])
-def generate_nickname():
+def generate_lucky_color():
     try:
-        # フロントエンドから送られてきたJSONデータを取得
-        data = request.get_json()
-        if not data or 'name' not in data:
-            return jsonify({'error': '名前が指定されていません。'}), 400
+        # 今日の日付を取得
+        today = datetime.now().strftime("%Y年%m月%d日")
 
-        name = data['name']
-
-        # AIへの指示（プロンプト）を入力された名前を使って動的に作成
-        prompt = f"「{name}」という苗字または名前に、クリエイティブで面白いニックネームを3つ考えてください。箇条書きで、面白い理由も軽く添えてください。"
+        # AIへの指示（プロンプト）を固定
+        prompt = f"{today}のラッキーカラーを1つ、その色にまつわるポジティブな一言アドバイスと一緒に教えてください。色の名前は一般的な名称でお願いします。フォーマットは「ラッキーカラー：色名\nアドバイス：一言」のようにしてください。"
         
         response = model.generate_content(prompt)
         
-        # 結果を整形して改行を保持
         formatted_response = response.text.strip()
 
-        return jsonify({'nickname': formatted_response})
+        # キーを 'result' に変更
+        return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"ニックネーム生成中にエラー: {e}")
+        print(f"ラッキーカラー生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

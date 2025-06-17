@@ -3,42 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ニックネームジェネレーター</title>
+    <title>今日のラッキーカラー</title>
     <style>
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #f4f7f6; color: #333; }
-        h1 { color: #2c3e50; }
+        body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; text-align: center; margin-top: 50px; background-color: #fdfaf6; color: #5d5d5d; }
+        h1 { color: #e5a924; }
         #container { max-width: 500px; margin: 0 auto; padding: 20px; }
-        #name-input { width: 80%; padding: 12px; font-size: 1em; border-radius: 5px; border: 1px solid #ccc; margin-bottom: 15px; }
-        button { padding: 12px 25px; font-size: 1em; color: #fff; background-color: #3498db; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; }
-        button:hover { background-color: #2980b9; }
-        #result-container { margin-top: 30px; padding: 20px; background-color: #fff; border-radius: 8px; min-height: 100px; line-height: 1.6; text-align: left; box-shadow: 0 4px 6px rgba(0,0,0,0.1); white-space: pre-wrap; }
+        button { padding: 12px 25px; font-size: 1.1em; color: #fff; background-color: #ffc107; border: none; border-radius: 25px; cursor: pointer; transition: background-color 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        button:hover { background-color: #e5a924; }
+        #result-container { margin-top: 30px; padding: 25px; background-color: #fff; border-radius: 8px; min-height: 120px; line-height: 1.8; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); white-space: pre-wrap; display: flex; align-items: center; justify-content: center; font-size: 1.2em;}
         #loading { display: none; color: #7f8c8d; }
     </style>
 </head>
 <body>
     <div id="container">
-        <h1>ニックネームジェネレーター</h1>
-        <input type="text" id="name-input" placeholder="名前や苗字を入力（例：田中）">
-        <br>
-        <button id="generate-btn">面白いニックネームを3つ考えて</button>
+        <h1>今日のラッキーカラー</h1>
+        <button id="generate-btn">今日のラッキーカラーを占う</button>
         
         <div id="result-container">
-            <p id="result-text">ここにニックネームが表示されます</p>
+            <p id="result-text">ボタンを押してね</p>
             <p id="loading">生成中...</p>
         </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
-            const nameInput = document.getElementById('name-input');
-            const name = nameInput.value;
-
-            // 名前が入力されているかチェック
-            if (!name.trim()) {
-                alert('名前を入力してください！');
-                return;
-            }
-
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
             const button = document.getElementById('generate-btn');
@@ -48,19 +36,15 @@
             button.disabled = true;
 
             try {
+                // バックエンドにリクエストを送る（今回は送るデータなし）
                 const response = await fetch('/generate', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    // 入力された名前をJSON形式でバックエンドに送る
-                    body: JSON.stringify({ name: name })
+                    method: 'POST'
                 });
 
                 const data = await response.json();
 
-                if (data.nickname) {
-                    resultText.textContent = data.nickname;
+                if (data.result) {
+                    resultText.textContent = data.result;
                 } else {
                     resultText.textContent = 'エラーが発生しました。';
                 }
