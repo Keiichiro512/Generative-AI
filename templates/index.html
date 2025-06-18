@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>今日のラッキーカラー</title>
+    <title>一行日記ジェネレーター</title>
     <style>
-        body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; text-align: center; margin-top: 50px; background-color: #fdfaf6; color: #5d5d5d; }
-        h1 { color: #e5a924; }
+        body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; text-align: center; margin-top: 50px; background-color: #f8f9fa; color: #495057; }
+        h1 { color: #5dade2; }
         #container { max-width: 500px; margin: 0 auto; padding: 20px; }
-        button { padding: 12px 25px; font-size: 1.1em; color: #fff; background-color: #ffc107; border: none; border-radius: 25px; cursor: pointer; transition: background-color 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        button:hover { background-color: #e5a924; }
+        button { padding: 12px 25px; font-size: 1.1em; color: #fff; background-color: #5dade2; border: none; border-radius: 25px; cursor: pointer; transition: background-color 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        button:hover { background-color: #3498db; }
         #result-container { margin-top: 30px; padding: 25px; background-color: #fff; border-radius: 8px; min-height: 120px; line-height: 1.8; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); white-space: pre-wrap; display: flex; align-items: center; justify-content: center; font-size: 1.2em;}
         #loading { display: none; color: #7f8c8d; }
     </style>
 </head>
 <body>
     <div id="container">
-        <h1>今日のラッキーカラー</h1>
-        <button id="generate-btn">今日のラッキーカラーを占う</button>
+        <h1>一行日記ジェネレーター</h1>
+        <button id="generate-btn">ポジティブな一行日記を生成して</button>
         
         <div id="result-container">
-            <p id="result-text">ボタンを押してね</p>
+            <p id="result-text">ボタンを押して、今日の日記を生成</p>
             <p id="loading">生成中...</p>
         </div>
     </div>
@@ -36,7 +36,6 @@
             button.disabled = true;
 
             try {
-                // バックエンドにリクエストを送る（今回は送るデータなし）
                 const response = await fetch('/generate', {
                     method: 'POST'
                 });

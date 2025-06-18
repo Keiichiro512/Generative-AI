@@ -2,7 +2,6 @@ import os
 import google.generativeai as genai
 from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv
-from datetime import datetime
 
 load_dotenv()
 
@@ -19,25 +18,20 @@ except Exception as e:
 def index():
     return render_template('index.html')
 
-# POSTメソッドは維持しつつ、リクエストボディは使わない
 @app.route('/generate', methods=['POST'])
-def generate_lucky_color():
+def generate_diary():
     try:
-        # 今日の日付を取得
-        today = datetime.now().strftime("%Y年%m月%d日")
-
-        # AIへの指示（プロンプト）を固定
-        prompt = f"{today}のラッキーカラーを1つ、その色にまつわるポジティブな一言アドバイスと一緒に教えてください。色の名前は一般的な名称でお願いします。フォーマットは「ラッキーカラー：色名\nアドバイス：一言」のようにしてください。"
+        # AIへの指示（プロンプト）を「一行日記」用に変更
+        prompt = "架空の人物になりきって、今日あった素晴らしい出来事や感じたことを、ポジティブな一行日記として生成してください。読んだ人が少し元気になれるような、心温まる内容でお願いします。"
         
         response = model.generate_content(prompt)
         
         formatted_response = response.text.strip()
 
-        # キーを 'result' に変更
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"ラッキーカラー生成中にエラー: {e}")
+        print(f"日記生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
