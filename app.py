@@ -19,10 +19,21 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def generate_diary():
+def generate_tweet_idea():
     try:
-        # AIへの指示（プロンプト）を「一行日記」用に変更
-        prompt = "架空の人物になりきって、今日あった素晴らしい出来事や感じたことを、ポジティブな一行日記として生成してください。読んだ人が少し元気になれるような、心温まる内容でお願いします。"
+        # AIへの指示（プロンプト）を「ツイートアイデア」用に変更
+        prompt = """
+あなたは人気のテック系インフルエンサーです。
+「プログラミング学習」をテーマにした、多くの人に「いいね」や「リポスト」をしてもらえそうな、面白くて役立つツイートのアイデアを1つだけ生成してください。
+
+フォーマットは必ず以下のようにしてください。
+
+【ツイート案】
+(ここに140字程度のツイート本文)
+
+【ハッシュタグ案】
+#プログラミング学習 #駆け出しエンジニアと繋がりたい
+"""
         
         response = model.generate_content(prompt)
         
@@ -31,7 +42,7 @@ def generate_diary():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"日記生成中にエラー: {e}")
+        print(f"ツイートアイデア生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
