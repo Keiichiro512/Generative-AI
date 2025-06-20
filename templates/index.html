@@ -3,73 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ツイートアイデアジェネレーター</title>
+    <title>ブログタイトルメーカー</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Noto Sans JP', sans-serif;
             text-align: center;
-            margin-top: 50px;
-            background-color: #1a202c; /* ダークな背景色 */
-            color: #e2e8f0; /* 明るい文字色 */
+            margin-top: 40px;
+            background-color: #f8f9fa;
+            color: #212529;
         }
         h1 {
-            color: #63b3ed; /* 明るい青 */
+            font-weight: 700;
+            color: #343a40;
         }
         #container {
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
         }
+        #keyword-input {
+            width: 85%;
+            padding: 12px;
+            font-size: 1em;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            margin-bottom: 20px;
+        }
         button {
-            padding: 12px 25px;
+            padding: 12px 30px;
             font-size: 1.1em;
-            font-weight: bold;
+            font-weight: 700;
             color: #fff;
-            background-color: #4299e1; /* 少し濃い青 */
+            background: linear-gradient(45deg, #007bff, #0056b3);
             border: none;
-            border-radius: 25px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
         }
         button:hover {
-            background-color: #3182ce;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
         }
         #result-container {
             margin-top: 30px;
             padding: 25px;
-            background-color: #2d3748; /* 背景より少し明るいダーク色 */
+            background-color: #ffffff;
             border-radius: 8px;
             min-height: 150px;
-            line-height: 1.8;
-            text-align: left; /* ツイートなので左寄せに */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            line-height: 2.0;
+            text-align: left;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             white-space: pre-wrap;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1em;
         }
         #loading {
             display: none;
-            color: #a0aec0;
+            color: #6c757d;
         }
     </style>
 </head>
 <body>
     <div id="container">
-        <h1>ツイートアイデアジェネレーター</h1>
-        <button id="generate-btn">ツイートのアイデアを生成する</button>
+        <h1>ブログタイトルメーカー</h1>
+        <input type="text" id="keyword-input" placeholder="キーワードを入力 (例: Python 入門)">
+        <br>
+        <button id="generate-btn">タイトルを3つ提案してもらう</button>
         
         <div id="result-container">
-            <p id="result-text">ボタンを押して、バズるツイートの種を見つけよう</p>
+            <p id="result-text">キーワードを入力してボタンを押してください</p>
             <p id="loading">生成中...</p>
         </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
+            const keywordInput = document.getElementById('keyword-input');
+            const keyword = keywordInput.value;
+
+            if (!keyword.trim()) {
+                alert('キーワードを入力してください！');
+                return;
+            }
+
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
             const button = document.getElementById('generate-btn');
@@ -79,7 +95,13 @@
             button.disabled = true;
 
             try {
-                const response = await fetch('/generate', { method: 'POST' });
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    // 入力されたキーワードをJSON形式でバックエンドに送る
+                    body: JSON.stringify({ keyword: keyword })
+                });
+
                 const data = await response.json();
 
                 if (data.result) {

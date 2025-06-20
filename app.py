@@ -19,20 +19,20 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def generate_tweet_idea():
+def generate_blog_titles():
     try:
-        # AIへの指示（プロンプト）を「ツイートアイデア」用に変更
-        prompt = """
-あなたは人気のテック系インフルエンサーです。
-「プログラミング学習」をテーマにした、多くの人に「いいね」や「リポスト」をしてもらえそうな、面白くて役立つツイートのアイデアを1つだけ生成してください。
+        # フロントエンドから送られてきたJSONデータを取得
+        data = request.get_json()
+        if not data or 'keyword' not in data:
+            return jsonify({'error': 'キーワードが指定されていません。'}), 400
 
-フォーマットは必ず以下のようにしてください。
+        keyword = data['keyword']
 
-【ツイート案】
-(ここに140字程度のツイート本文)
-
-【ハッシュタグ案】
-#プログラミング学習 #駆け出しエンジニアと繋がりたい
+        # AIへの指示（プロンプト）を入力されたキーワードを使って動的に作成
+        prompt = f"""
+「{keyword}」というキーワードをテーマにした、読者のクリックを誘うような魅力的なブログ記事のタイトルを3つ提案してください。
+それぞれ異なる切り口で、具体的な数字やパワーワード（「知らないと損」「完全ガイド」など）を入れるなど、SEO（検索エンジン最適化）も少し意識してください。
+箇条書きで、読みやすく提示してください。
 """
         
         response = model.generate_content(prompt)
@@ -42,7 +42,7 @@ def generate_tweet_idea():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"ツイートアイデア生成中にエラー: {e}")
+        print(f"ブログタイトル生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
