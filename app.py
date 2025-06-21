@@ -19,20 +19,29 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def generate_blog_titles():
+def generate_menu():
     try:
-        # フロントエンドから送られてきたJSONデータを取得
         data = request.get_json()
-        if not data or 'keyword' not in data:
-            return jsonify({'error': 'キーワードが指定されていません。'}), 400
+        if not data or 'ingredients' not in data:
+            return jsonify({'error': '材料が指定されていません。'}), 400
 
-        keyword = data['keyword']
+        ingredients = data['ingredients']
 
-        # AIへの指示（プロンプト）を入力されたキーワードを使って動的に作成
+        # AIへの指示を、料理名と簡単な手順を尋ねるように変更
         prompt = f"""
-「{keyword}」というキーワードをテーマにした、読者のクリックを誘うような魅力的なブログ記事のタイトルを3つ提案してください。
-それぞれ異なる切り口で、具体的な数字やパワーワード（「知らないと損」「完全ガイド」など）を入れるなど、SEO（検索エンジン最適化）も少し意識してください。
-箇条書きで、読みやすく提示してください。
+以下の冷蔵庫の中にある食材を使って作れる、美味しくて現実的な家庭料理のメニューを1つだけ提案してください。
+メニュー名だけでなく、作るための簡単な手順も3ステップ程度で教えてください。
+
+【冷蔵庫の中身】
+{ingredients}
+
+【出力フォーマット】
+料理名：(ここに料理名)
+
+簡単な作り方：
+1. (手順1)
+2. (手順2)
+3. (手順3)
 """
         
         response = model.generate_content(prompt)
@@ -42,7 +51,7 @@ def generate_blog_titles():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"ブログタイトル生成中にエラー: {e}")
+        print(f"献立生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

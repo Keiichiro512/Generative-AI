@@ -3,48 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ブログタイトルメーカー</title>
+    <title>夕食の献立メーカー</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Zen+Maru+Gothic:wght@400;700&display=swap');
         body {
-            font-family: 'Noto Sans JP', sans-serif;
+            font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
             text-align: center;
             margin-top: 40px;
-            background-color: #f8f9fa;
-            color: #212529;
+            background-color: #fffaf0; /* 温かみのあるクリーム色 */
+            color: #5d4037; /* 落ち着いた茶色 */
         }
         h1 {
             font-weight: 700;
-            color: #343a40;
+            color: #ff7043; /* 鮮やかなオレンジ */
         }
         #container {
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
         }
-        #keyword-input {
+        textarea {
             width: 85%;
+            height: 100px; /* 高さを指定 */
             padding: 12px;
             font-size: 1em;
+            font-family: inherit; /* bodyのフォントを継承 */
             border-radius: 8px;
-            border: 1px solid #ced4da;
+            border: 1px solid #ffcc80;
             margin-bottom: 20px;
+            resize: vertical; /* 縦方向のリサイズを許可 */
         }
         button {
             padding: 12px 30px;
             font-size: 1.1em;
             font-weight: 700;
             color: #fff;
-            background: linear-gradient(45deg, #007bff, #0056b3);
+            background: linear-gradient(45deg, #ff7043, #ff5722);
             border: none;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(255, 112, 67, 0.3);
         }
         button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+            box-shadow: 0 6px 20px rgba(255, 112, 67, 0.4);
         }
         #result-container {
             margin-top: 30px;
@@ -59,30 +62,30 @@
         }
         #loading {
             display: none;
-            color: #6c757d;
+            color: #a1887f;
         }
     </style>
 </head>
 <body>
     <div id="container">
-        <h1>ブログタイトルメーカー</h1>
-        <input type="text" id="keyword-input" placeholder="キーワードを入力 (例: Python 入門)">
+        <h1>夕食の献立メーカー</h1>
+        <textarea id="ingredients-input" placeholder="冷蔵庫にあるものを入力 (例：豚肉、玉ねぎ、卵)"></textarea>
         <br>
-        <button id="generate-btn">タイトルを3つ提案してもらう</button>
+        <button id="generate-btn">作れる料理を教えてもらう</button>
         
         <div id="result-container">
-            <p id="result-text">キーワードを入力してボタンを押してください</p>
-            <p id="loading">生成中...</p>
+            <p id="result-text">材料を入力してボタンを押してください</p>
+            <p id="loading">調理法を考え中...</p>
         </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
-            const keywordInput = document.getElementById('keyword-input');
-            const keyword = keywordInput.value;
+            const ingredientsInput = document.getElementById('ingredients-input');
+            const ingredients = ingredientsInput.value;
 
-            if (!keyword.trim()) {
-                alert('キーワードを入力してください！');
+            if (!ingredients.trim()) {
+                alert('材料を入力してください！');
                 return;
             }
 
@@ -98,8 +101,7 @@
                 const response = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    // 入力されたキーワードをJSON形式でバックエンドに送る
-                    body: JSON.stringify({ keyword: keyword })
+                    body: JSON.stringify({ ingredients: ingredients })
                 });
 
                 const data = await response.json();
