@@ -3,92 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>夕食の献立メーカー</title>
+    <title>褒め言葉ジェネレーター</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Zen+Maru+Gothic:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap');
         body {
-            font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
+            font-family: 'Kosugi Maru', sans-serif;
             text-align: center;
-            margin-top: 40px;
-            background-color: #fffaf0; /* 温かみのあるクリーム色 */
-            color: #5d4037; /* 落ち着いた茶色 */
+            margin-top: 50px;
+            background-color: #f0fdf4; /* 非常に薄い緑 */
+            color: #14532d; /* 濃い緑 */
         }
         h1 {
-            font-weight: 700;
-            color: #ff7043; /* 鮮やかなオレンジ */
+            color: #22c55e; /* 鮮やかな緑 */
+            font-weight: bold;
         }
         #container {
-            max-width: 600px;
+            max-width: 500px;
             margin: 0 auto;
             padding: 20px;
         }
-        textarea {
-            width: 85%;
-            height: 100px; /* 高さを指定 */
-            padding: 12px;
-            font-size: 1em;
-            font-family: inherit; /* bodyのフォントを継承 */
-            border-radius: 8px;
-            border: 1px solid #ffcc80;
-            margin-bottom: 20px;
-            resize: vertical; /* 縦方向のリサイズを許可 */
-        }
         button {
-            padding: 12px 30px;
+            padding: 15px 35px;
             font-size: 1.1em;
-            font-weight: 700;
+            font-family: 'Kosugi Maru', sans-serif;
             color: #fff;
-            background: linear-gradient(45deg, #ff7043, #ff5722);
+            background: linear-gradient(45deg, #4ade80, #22c55e);
             border: none;
-            border-radius: 8px;
+            border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 112, 67, 0.3);
+            box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3);
         }
         button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(255, 112, 67, 0.4);
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
         }
         #result-container {
-            margin-top: 30px;
-            padding: 25px;
+            margin-top: 40px;
+            padding: 30px;
             background-color: #ffffff;
+            border-left: 8px solid #86efac; /* 左側にアクセントの線 */
             border-radius: 8px;
-            min-height: 150px;
-            line-height: 2.0;
-            text-align: left;
+            min-height: 120px;
+            line-height: 1.8;
+            text-align: center;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             white-space: pre-wrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25em;
         }
         #loading {
             display: none;
-            color: #a1887f;
+            color: #757575;
         }
     </style>
 </head>
 <body>
     <div id="container">
-        <h1>夕食の献立メーカー</h1>
-        <textarea id="ingredients-input" placeholder="冷蔵庫にあるものを入力 (例：豚肉、玉ねぎ、卵)"></textarea>
-        <br>
-        <button id="generate-btn">作れる料理を教えてもらう</button>
+        <h1>褒め言葉ジェネレーター</h1>
+        <button id="generate-btn">素敵な褒め言葉をもらう</button>
         
         <div id="result-container">
-            <p id="result-text">材料を入力してボタンを押してください</p>
-            <p id="loading">調理法を考え中...</p>
+            <p id="result-text">ボタンを押して、自分や誰かを元気づけよう</p>
+            <p id="loading">あなたの良いところを探しています...</p>
         </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
-            const ingredientsInput = document.getElementById('ingredients-input');
-            const ingredients = ingredientsInput.value;
-
-            if (!ingredients.trim()) {
-                alert('材料を入力してください！');
-                return;
-            }
-
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
             const button = document.getElementById('generate-btn');
@@ -98,12 +82,7 @@
             button.disabled = true;
 
             try {
-                const response = await fetch('/generate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ingredients: ingredients })
-                });
-
+                const response = await fetch('/generate', { method: 'POST' });
                 const data = await response.json();
 
                 if (data.result) {

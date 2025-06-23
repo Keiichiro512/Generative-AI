@@ -19,29 +19,20 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def generate_menu():
+def generate_compliment():
     try:
-        data = request.get_json()
-        if not data or 'ingredients' not in data:
-            return jsonify({'error': '材料が指定されていません。'}), 400
+        # AIへの指示（プロンプト）を褒め言葉用に変更
+        prompt = """
+あなたは、人の素敵なところを見つけるのが得意な、心優しいカウンセラーです。
+相手が本当に言われて嬉しい、心に響くような褒め言葉を1つだけ生成してください。
 
-        ingredients = data['ingredients']
+表面的なこと（例：「すごい！」「かわいいね」など）ではなく、相手の努力や内面、存在そのものを肯定するような、具体的で温かい言葉でお願いします。
 
-        # AIへの指示を、料理名と簡単な手順を尋ねるように変更
-        prompt = f"""
-以下の冷蔵庫の中にある食材を使って作れる、美味しくて現実的な家庭料理のメニューを1つだけ提案してください。
-メニュー名だけでなく、作るための簡単な手順も3ステップ程度で教えてください。
+以下に良い例をいくつか示します。このような方向性でお願いします。
 
-【冷蔵庫の中身】
-{ingredients}
-
-【出力フォーマット】
-料理名：(ここに料理名)
-
-簡単な作り方：
-1. (手順1)
-2. (手順2)
-3. (手順3)
+例1：いつも周りをよく見て、細やかな気配りができるところ、本当に尊敬しています。
+例2：〇〇さんがいるだけで、その場の雰囲気がパッと明るくなりますね。
+例3：難しいことにも諦めずに挑戦し続けるその姿勢に、いつも元気をもらっています。
 """
         
         response = model.generate_content(prompt)
@@ -51,7 +42,7 @@ def generate_menu():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"献立生成中にエラー: {e}")
+        print(f"褒め言葉生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
