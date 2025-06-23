@@ -3,71 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>褒め言葉ジェネレーター</title>
+    <title>必殺技ジェネレーター</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Noto+Sans+JP&display=swap');
         body {
-            font-family: 'Kosugi Maru', sans-serif;
+            font-family: 'Noto Sans JP', sans-serif;
             text-align: center;
             margin-top: 50px;
-            background-color: #f0fdf4; /* 非常に薄い緑 */
-            color: #14532d; /* 濃い緑 */
+            background-color: #121212; /* 漆黒 */
+            color: #e0e0e0; /* 明るい灰色 */
         }
         h1 {
-            color: #22c55e; /* 鮮やかな緑 */
-            font-weight: bold;
+            font-family: 'Orbitron', sans-serif; /* SF風のフォント */
+            color: #ff3d00; /* 燃えるような赤 */
+            text-shadow: 0 0 5px #ff3d00, 0 0 10px #ff3d00;
         }
         #container {
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
             padding: 20px;
         }
         button {
-            padding: 15px 35px;
-            font-size: 1.1em;
-            font-family: 'Kosugi Maru', sans-serif;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-family: 'Orbitron', sans-serif;
             color: #fff;
-            background: linear-gradient(45deg, #4ade80, #22c55e);
-            border: none;
-            border-radius: 50px;
+            background: linear-gradient(45deg, #d50000, #ff6d00);
+            border: 2px solid #ff3d00;
+            border-radius: 5px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3);
+            text-shadow: 0 0 3px #fff;
         }
         button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+            background: linear-gradient(45deg, #ff6d00, #d50000);
+            box-shadow: 0 0 20px #ff3d00;
+            transform: scale(1.05);
         }
         #result-container {
             margin-top: 40px;
             padding: 30px;
-            background-color: #ffffff;
-            border-left: 8px solid #86efac; /* 左側にアクセントの線 */
+            background-color: rgba(40, 40, 40, 0.8);
+            border: 1px solid #ff3d00;
             border-radius: 8px;
-            min-height: 120px;
+            min-height: 150px;
             line-height: 1.8;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            text-align: left;
+            box-shadow: 0 0 15px rgba(255, 61, 0, 0.3);
             white-space: pre-wrap;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25em;
+            font-size: 1.1em;
         }
         #loading {
             display: none;
-            color: #757575;
+            color: #bdbdbd;
         }
     </style>
 </head>
 <body>
     <div id="container">
-        <h1>褒め言葉ジェネレーター</h1>
-        <button id="generate-btn">素敵な褒め言葉をもらう</button>
+        <h1>必殺技ジェネレーター</h1>
+        <button id="generate-btn">新たな必殺技を授かる！</button>
         
         <div id="result-container">
-            <p id="result-text">ボタンを押して、自分や誰かを元気づけよう</p>
-            <p id="loading">あなたの良いところを探しています...</p>
+            <p id="result-text">ボタンを押して、最強の技をその手に…！</p>
+            <p id="loading">詠唱中...</p>
         </div>
     </div>
 
@@ -88,7 +87,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラーが発生しました。';
+                    resultText.textContent = 'エラー：技の詠唱に失敗しました。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
