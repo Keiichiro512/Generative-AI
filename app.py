@@ -19,23 +19,25 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def generate_special_move():
+def generate_location():
     try:
-        # AIへの指示（プロンプト）を必殺技用に変更
-        prompt = """
-あなたは、世界中のRPGや漫画に登場する、最高にかっこいい技を名付ける「詠唱師」です。
-「炎属性」の剣技、魔法、または体術の必殺技の名前を、厨二病っぽく、かつ独創的で力強い響きのものを1つだけ生成してください。
+        data = request.get_json()
+        if not data or 'item' not in data:
+            return jsonify({'error': 'アイテムが指定されていません。'}), 400
 
-技の名前だけでなく、どのような技かの簡単な説明（例：灼熱の炎を纏った剣で敵を十文字に切り裂く）も添えてください。
+        item = data['item']
 
-フォーマットは必ず以下のようにしてください。
+        # AIへの指示（プロンプト）
+        prompt = f"""
+あなたは、家の中でのモノの隠れ場所を的確に言い当てる、ちょっとおせっかいな妖精です。
+今、家の中で「{item}」が見つからなくて困っています。
 
-【技名】：(ここに技名)
-【説明】：(ここに技の説明)
+「まさか、そんなところに！」と思うような、でも「ありえるかも…」と思える絶妙な場所を3つ、可能性の高い順に提案してください。
 
-例：
-【技名】：インフェルノ・カタストロフィ
-【説明】：すべてを焼き尽くす煉獄の炎を召喚し、敵一体に絶大なダメージを与える究極魔法。
+【出力フォーマット】
+1. (一番ありそうな場所)
+2. (次点でありがちな場所)
+3. (意外な盲点かもしれない場所)
 """
         
         response = model.generate_content(prompt)
@@ -45,7 +47,7 @@ def generate_special_move():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"必殺技生成中にエラー: {e}")
+        print(f"場所の生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
