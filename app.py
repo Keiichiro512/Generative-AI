@@ -19,25 +19,19 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def generate_location():
+def generate_story_starter():
     try:
-        data = request.get_json()
-        if not data or 'item' not in data:
-            return jsonify({'error': 'アイテムが指定されていません。'}), 400
-
-        item = data['item']
-
         # AIへの指示（プロンプト）
-        prompt = f"""
-あなたは、家の中でのモノの隠れ場所を的確に言い当てる、ちょっとおせっかいな妖精です。
-今、家の中で「{item}」が見つからなくて困っています。
+        prompt = """
+あなたは、世界中の子供たちを虜にする物語を紡ぎ出す、有名な童話作家です。
+「むかしむかし、あるところに…」から自然に続く、読者の想像力を掻き立てるような、不思議で魅力的な物語の冒頭を、たった1文だけ創作してください。
 
-「まさか、そんなところに！」と思うような、でも「ありえるかも…」と思える絶妙な場所を3つ、可能性の高い順に提案してください。
+ありきたりな内容ではなく、少しだけ意外性のある、続きが気になるような一文をお願いします。
 
-【出力フォーマット】
-1. (一番ありそうな場所)
-2. (次点でありがちな場所)
-3. (意外な盲点かもしれない場所)
+良い例：
+・むかしむかし、あるところに、自分の影と喧嘩別れしてしまった、ひとりぼっちの王様がいました。
+・むかしむかし、あるところに、空から降ってくる星を食べて生きている、小さなドラゴンが住んでいました。
+・むかしむかし、あるところに、全ての嘘が本当になってしまう、不思議な泉が湧いていました。
 """
         
         response = model.generate_content(prompt)
@@ -47,7 +41,7 @@ def generate_location():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"場所の生成中にエラー: {e}")
+        print(f"物語の冒頭生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
