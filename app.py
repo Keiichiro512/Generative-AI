@@ -19,19 +19,29 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def generate_story_starter():
+def generate_riddle():
     try:
+        data = request.get_json()
+        if not data or 'answer' not in data:
+            return jsonify({'error': '答えが指定されていません。'}), 400
+
+        answer = data['answer']
+
         # AIへの指示（プロンプト）
-        prompt = """
-あなたは、世界中の子供たちを虜にする物語を紡ぎ出す、有名な童話作家です。
-「むかしむかし、あるところに…」から自然に続く、読者の想像力を掻き立てるような、不思議で魅力的な物語の冒頭を、たった1文だけ創作してください。
+        prompt = f"""
+あなたは、子供から大人まで楽しめる、面白くて少しひねりのある「なぞなぞ」を作るのが得意な作家です。
+今から指定する「答え」になるような、オリジナルのなぞなぞを1つ創作してください。
 
-ありきたりな内容ではなく、少しだけ意外性のある、続きが気になるような一文をお願いします。
+【答え】
+{answer}
 
-良い例：
-・むかしむかし、あるところに、自分の影と喧嘩別れしてしまった、ひとりぼっちの王様がいました。
-・むかしむかし、あるところに、空から降ってくる星を食べて生きている、小さなドラゴンが住んでいました。
-・むかしむかし、あるところに、全ての嘘が本当になってしまう、不思議な泉が湧いていました。
+なぞなぞには、答えのヒントを入れつつも、すぐには分からないような言葉遊びや意外な視点を含めてください。
+最後は必ず「〜なーんだ？」で終わるようにしてください。
+
+【出力フォーマット】
+(なぞなぞの問題文)
+
+答え：{answer}
 """
         
         response = model.generate_content(prompt)
@@ -41,7 +51,7 @@ def generate_story_starter():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"物語の冒頭生成中にエラー: {e}")
+        print(f"なぞなぞ生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
