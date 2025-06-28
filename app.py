@@ -19,29 +19,34 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def generate_riddle():
+def generate_youtube_title():
     try:
         data = request.get_json()
-        if not data or 'answer' not in data:
-            return jsonify({'error': '答えが指定されていません。'}), 400
+        if not data or 'theme' not in data:
+            return jsonify({'error': 'テーマが指定されていません。'}), 400
 
-        answer = data['answer']
+        theme = data['theme']
 
         # AIへの指示（プロンプト）
         prompt = f"""
-あなたは、子供から大人まで楽しめる、面白くて少しひねりのある「なぞなぞ」を作るのが得意な作家です。
-今から指定する「答え」になるような、オリジナルのなぞなぞを1つ創作してください。
+あなたは、登録者数100万人を超える大人気YouTuberであり、動画のタイトル付けの達人です。
+今から指定する「テーマ」で、視聴者が思わずクリックしたくなるような、魅力的で再生数が伸びる動画のタイトル案を3つ提案してください。
 
-【答え】
-{answer}
+【動画のテーマ】
+{theme}
 
-なぞなぞには、答えのヒントを入れつつも、すぐには分からないような言葉遊びや意外な視点を含めてください。
-最後は必ず「〜なーんだ？」で終わるようにしてください。
+提案は、それぞれ異なるアプローチ（例：権威性を示す、好奇心を煽る、具体的な結果を約束する）でお願いします。
+タイトルには、SEO（検索対策）を意識したキーワードを含めつつ、視聴者の興味を引くような数字や衝撃的な言葉を入れてください。
 
 【出力フォーマット】
-(なぞなぞの問題文)
+1. (タイトル案1)
+   [ポイント]：(このタイトルの狙いや、なぜクリックされやすいかの簡単な説明)
 
-答え：{answer}
+2. (タイトル案2)
+   [ポイント]：(このタイトルの狙いや、なぜクリックされやすいかの簡単な説明)
+
+3. (タイトル案3)
+   [ポイント]：(このタイトルの狙いや、なぜクリックされやすいかの簡単な説明)
 """
         
         response = model.generate_content(prompt)
@@ -51,7 +56,7 @@ def generate_riddle():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"なぞなぞ生成中にエラー: {e}")
+        print(f"動画タイトル生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
