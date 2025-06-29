@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube動画タイトル案ジェネレーター</title>
+    <title>今日の筋トレメニュー</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
@@ -11,29 +11,29 @@
             text-align: center;
             margin: 0;
             padding-top: 50px;
-            background-color: #181818; /* YouTubeのダークモード背景色 */
-            color: #ffffff;
+            background-color: #f4f4f4; /* クリーンなグレー */
+            color: #333;
         }
         h1 {
             font-family: 'Roboto', sans-serif;
             font-weight: 700;
+            color: #1a73e8; /* エネルギッシュな青 */
             font-size: 2.2em;
-            letter-spacing: 0.02em;
         }
         #container {
-            max-width: 650px;
+            max-width: 600px;
             margin: 0 auto;
             padding: 20px;
         }
-        #theme-input {
+        #part-input {
             width: 85%;
             padding: 14px;
             font-size: 1em;
             font-family: inherit;
-            border-radius: 4px;
-            border: 1px solid #3d3d3d;
-            background-color: #121212;
-            color: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            color: #333;
             margin-bottom: 20px;
         }
         button {
@@ -42,51 +42,53 @@
             font-weight: 700;
             font-family: 'Roboto', sans-serif;
             color: #fff;
-            background-color: #ff0000; /* YouTubeの赤 */
+            background-color: #1a73e8;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
         }
         button:hover {
-            background-color: #cc0000;
+            background-color: #135abc;
+            box-shadow: 0 4px 15px rgba(26, 115, 232, 0.3);
         }
         #result-container {
             margin-top: 40px;
             padding: 30px;
-            background-color: #282828;
+            background-color: #ffffff;
             border-radius: 8px;
             min-height: 200px;
             line-height: 2.2;
             text-align: left;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             white-space: pre-wrap;
         }
         #loading {
             display: none;
-            color: #aaaaaa;
+            color: #888;
         }
     </style>
 </head>
 <body>
     <div id="container">
-        <h1>YouTube動画タイトル案ジェネレーター</h1>
-        <input type="text" id="theme-input" placeholder="動画のテーマを入力 (例: 沖縄旅行 Vlog)">
+        <h1>今日の筋トレメニュー</h1>
+        <input type="text" id="part-input" placeholder="鍛えたい部位を入力 (例: 上半身, 脚, 肩)">
         <br>
-        <button id="generate-btn">動画タイトルを生成する</button>
+        <button id="generate-btn">メニューを提案してもらう</button>
         
         <div id="result-container">
-            <p id="result-text" style="text-align: center;">ここに、バズる動画タイトル案が提案されます</p>
-            <p id="loading">最高のタイトルを考案中...</p>
+            <p id="result-text" style="text-align: center;">ここに、あなたに最適な筋トレメニューが提案されます</p>
+            <p id="loading">最強のメニューを考案中...</p>
         </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
-            const themeInput = document.getElementById('theme-input');
-            const theme = themeInput.value;
+            const partInput = document.getElementById('part-input');
+            const part = partInput.value;
 
-            if (!theme.trim()) {
-                alert('動画のテーマを入力してください！');
+            if (!part.trim()) {
+                alert('鍛えたい部位を入力してください！');
                 return;
             }
 
@@ -102,7 +104,7 @@
                 const response = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ theme: theme })
+                    body: JSON.stringify({ part: part })
                 });
 
                 const data = await response.json();
@@ -110,7 +112,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：良いタイトルが思いつきませんでした。';
+                    resultText.textContent = 'エラー：良いメニューが思いつきませんでした。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
