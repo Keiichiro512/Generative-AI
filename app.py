@@ -19,31 +19,20 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def generate_workout_menu():
+def generate_question():
     try:
-        data = request.get_json()
-        if not data or 'part' not in data:
-            return jsonify({'error': '部位が指定されていません。'}), 400
-
-        part = data['part']
-
         # AIへの指示（プロンプト）
-        prompt = f"""
-あなたは、経験豊富なパーソナルトレーナーです。
-クライアントからリクエストのあった「鍛えたい体の部位」に合わせて、自宅でもできる効果的な筋トレメニューを1つ提案してください。
+        prompt = """
+あなたは、どんな人ともすぐに打ち解けられる、コミュニケーションの達人です。
+初対面の人との会話のきっかけになるような、ユニークで面白い質問を1つだけ生成してください。
 
-【鍛えたい部位】
-{part}
+ただし、相手が答えに困るようなプライベートすぎる質問や、はい/いいえで終わってしまう質問は避けてください。
+相手の価値観や人柄が少し見えるような、ポジティブで楽しい会話につながる質問が望ましいです。
 
-提案には、具体的な「種目名」「セット数」「レップ数（回数）」、そしてそれぞれの種目の簡単な「ポイント」を含めてください。
-
-【出力フォーマット】
-今日のメニュー：【{part}の日】
-
-■ 種目名：(ここに種目名)
-・セット数：3セット
-・レップ数：10〜12回
-・ポイント：(ここに簡単なコツや注意点)
+良い例：
+・もし1ヶ月間、どこでも好きな場所に住めるとしたら、どこでどんなことをしてみたいですか？
+・子供の頃、一番熱中していた遊びは何ですか？
+・今までで一番「これは運が良かった！」と思えるエピソードがあれば教えてください。
 """
         
         response = model.generate_content(prompt)
@@ -53,7 +42,7 @@ def generate_workout_menu():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"筋トレメニュー生成中にエラー: {e}")
+        print(f"質問の生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

@@ -3,95 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>今日の筋トレメニュー</title>
+    <title>ランダムな質問ジェネレーター</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&family=Noto+Sans+JP:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;800&display=swap');
         body {
-            font-family: 'Noto Sans JP', 'Roboto', sans-serif;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
             text-align: center;
-            margin: 0;
-            padding-top: 50px;
-            background-color: #f4f4f4; /* クリーンなグレー */
-            color: #333;
+            margin-top: 50px;
+            background-color: #f7fafc; /* 明るいグレー */
+            color: #2d3748; /* 濃いグレー */
         }
         h1 {
-            font-family: 'Roboto', sans-serif;
-            font-weight: 700;
-            color: #1a73e8; /* エネルギッシュな青 */
-            font-size: 2.2em;
+            font-weight: 800;
+            color: #319795; /* ティールグリーン */
         }
         #container {
-            max-width: 600px;
+            max-width: 550px;
             margin: 0 auto;
             padding: 20px;
         }
-        #part-input {
-            width: 85%;
-            padding: 14px;
-            font-size: 1em;
-            font-family: inherit;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            background-color: #fff;
-            color: #333;
-            margin-bottom: 20px;
-        }
         button {
-            padding: 14px 35px;
+            padding: 15px 35px;
             font-size: 1.1em;
-            font-weight: 700;
-            font-family: 'Roboto', sans-serif;
+            font-weight: 800;
+            font-family: inherit;
             color: #fff;
-            background-color: #1a73e8;
+            background: linear-gradient(45deg, #4fd1c5, #319795);
             border: none;
-            border-radius: 8px;
+            border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(49, 151, 149, 0.3);
         }
         button:hover {
-            background-color: #135abc;
-            box-shadow: 0 4px 15px rgba(26, 115, 232, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(49, 151, 149, 0.4);
         }
         #result-container {
             margin-top: 40px;
-            padding: 30px;
+            padding: 40px;
             background-color: #ffffff;
-            border-radius: 8px;
-            min-height: 200px;
-            line-height: 2.2;
-            text-align: left;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            min-height: 120px;
+            line-height: 1.9;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             white-space: pre-wrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            color: #1a202c;
         }
         #loading {
             display: none;
-            color: #888;
+            color: #a0aec0;
         }
     </style>
 </head>
 <body>
     <div id="container">
-        <h1>今日の筋トレメニュー</h1>
-        <input type="text" id="part-input" placeholder="鍛えたい部位を入力 (例: 上半身, 脚, 肩)">
-        <br>
-        <button id="generate-btn">メニューを提案してもらう</button>
+        <h1>ランダムな質問ジェネレーター</h1>
+        <button id="generate-btn">面白い質問を生成する</button>
         
         <div id="result-container">
-            <p id="result-text" style="text-align: center;">ここに、あなたに最適な筋トレメニューが提案されます</p>
-            <p id="loading">最強のメニューを考案中...</p>
+            <p id="result-text">ボタンを押して、会話のきっかけを見つけよう</p>
+            <p id="loading">最高の質問を考えています...</p>
         </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
-            const partInput = document.getElementById('part-input');
-            const part = partInput.value;
-
-            if (!part.trim()) {
-                alert('鍛えたい部位を入力してください！');
-                return;
-            }
-
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
             const button = document.getElementById('generate-btn');
@@ -101,18 +83,13 @@
             button.disabled = true;
 
             try {
-                const response = await fetch('/generate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ part: part })
-                });
-
+                const response = await fetch('/generate', { method: 'POST' });
                 const data = await response.json();
 
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：良いメニューが思いつきませんでした。';
+                    resultText.textContent = 'エラー：良い質問が思いつきませんでした。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
