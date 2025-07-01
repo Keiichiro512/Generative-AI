@@ -3,77 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ランダムな質問ジェネレーター</title>
+    <title>ペットの名前ジェネレーター</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;800&display=swap');
         body {
             font-family: 'M PLUS Rounded 1c', sans-serif;
             text-align: center;
-            margin-top: 50px;
-            background-color: #f7fafc; /* 明るいグレー */
-            color: #2d3748; /* 濃いグレー */
+            margin-top: 40px;
+            background-color: #fef6e4; /* 優しいクリーム色 */
+            color: #8d5b4c; /* 温かみのある茶色 */
         }
         h1 {
             font-weight: 800;
-            color: #319795; /* ティールグリーン */
+            color: #f59e0b; /* 元気なオレンジ */
         }
         #container {
             max-width: 550px;
             margin: 0 auto;
             padding: 20px;
         }
+        #pet-info-input {
+            width: 85%;
+            padding: 14px;
+            font-size: 1em;
+            font-family: inherit;
+            border-radius: 25px;
+            border: 2px solid #fed7aa;
+            margin-bottom: 20px;
+            text-align: center;
+        }
         button {
-            padding: 15px 35px;
+            padding: 14px 35px;
             font-size: 1.1em;
             font-weight: 800;
             font-family: inherit;
             color: #fff;
-            background: linear-gradient(45deg, #4fd1c5, #319795);
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
             border: none;
-            border-radius: 50px;
+            border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(49, 151, 149, 0.3);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
         }
         button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(49, 151, 149, 0.4);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
         }
         #result-container {
-            margin-top: 40px;
-            padding: 40px;
+            margin-top: 30px;
+            padding: 30px;
             background-color: #ffffff;
             border-radius: 15px;
-            min-height: 120px;
-            line-height: 1.9;
-            text-align: center;
+            min-height: 200px;
+            line-height: 2.2;
+            text-align: left;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             white-space: pre-wrap;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3em;
-            color: #1a202c;
         }
         #loading {
             display: none;
-            color: #a0aec0;
+            color: #a1887f;
         }
     </style>
 </head>
 <body>
     <div id="container">
-        <h1>ランダムな質問ジェネレーター</h1>
-        <button id="generate-btn">面白い質問を生成する</button>
+        <h1>ペットの名前ジェネレーター</h1>
+        <input type="text" id="pet-info-input" placeholder="ペットの種類や特徴を入力 (例: 柴犬、白い猫)">
+        <br>
+        <button id="generate-btn">名前を考えてもらう</button>
         
         <div id="result-container">
-            <p id="result-text">ボタンを押して、会話のきっかけを見つけよう</p>
-            <p id="loading">最高の質問を考えています...</p>
+            <p id="result-text" style="text-align: center;">ここに、あなたのペットにぴったりの名前が提案されます</p>
+            <p id="loading">一生懸命考えています...</p>
         </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
+            const petInfoInput = document.getElementById('pet-info-input');
+            const petInfo = petInfoInput.value;
+
+            if (!petInfo.trim()) {
+                alert('ペットの種類や特徴を入力してください！');
+                return;
+            }
+
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
             const button = document.getElementById('generate-btn');
@@ -83,13 +98,18 @@
             button.disabled = true;
 
             try {
-                const response = await fetch('/generate', { method: 'POST' });
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pet_info: petInfo })
+                });
+
                 const data = await response.json();
 
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：良い質問が思いつきませんでした。';
+                    resultText.textContent = 'エラー：良い名前が思いつきませんでした。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';

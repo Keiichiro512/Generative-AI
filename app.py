@@ -19,20 +19,33 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def generate_question():
+def generate_pet_name():
     try:
+        data = request.get_json()
+        if not data or 'pet_info' not in data:
+            return jsonify({'error': 'ペットの情報が指定されていません。'}), 400
+
+        pet_info = data['pet_info']
+
         # AIへの指示（プロンプト）
-        prompt = """
-あなたは、どんな人ともすぐに打ち解けられる、コミュニケーションの達人です。
-初対面の人との会話のきっかけになるような、ユニークで面白い質問を1つだけ生成してください。
+        prompt = f"""
+あなたは、世界一のペットネーミングの専門家です。
+飼い主から伝えられたペットの情報にぴったりの、愛情がこもった素敵な名前を3つ提案してください。
 
-ただし、相手が答えに困るようなプライベートすぎる質問や、はい/いいえで終わってしまう質問は避けてください。
-相手の価値観や人柄が少し見えるような、ポジティブで楽しい会話につながる質問が望ましいです。
+【ペットの情報】
+{pet_info}
 
-良い例：
-・もし1ヶ月間、どこでも好きな場所に住めるとしたら、どこでどんなことをしてみたいですか？
-・子供の頃、一番熱中していた遊びは何ですか？
-・今までで一番「これは運が良かった！」と思えるエピソードがあれば教えてください。
+提案する名前には、それぞれ簡単な「名前の由来や意味」も添えてください。
+
+【出力フォーマット】
+1. **(名前1)**
+   由来：(名前の由来や意味を簡潔に説明)
+
+2. **(名前2)**
+   由来：(名前の由来や意味を簡潔に説明)
+
+3. **(名前3)**
+   由来：(名前の由来や意味を簡潔に説明)
 """
         
         response = model.generate_content(prompt)
@@ -42,7 +55,7 @@ def generate_question():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"質問の生成中にエラー: {e}")
+        print(f"ペットの名前生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
