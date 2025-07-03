@@ -3,91 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>架空の社名メーカー</title>
+    <title>ダジャレメーカー</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&family=Noto+Sans+JP:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap');
         body {
-            font-family: 'Noto Sans JP', 'Roboto', sans-serif;
+            font-family: 'Yusei Magic', sans-serif;
             text-align: center;
-            margin: 0;
-            padding-top: 50px;
-            background-color: #f8f9fa;
-            color: #212529;
+            margin-top: 40px;
+            background-color: #ffeb3b; /* 明るい黄色 */
+            color: #4e342e; /* 焦げ茶色 */
         }
         h1 {
-            font-family: 'Roboto', sans-serif;
-            font-weight: 700;
-            color: #0d6efd; /* プロフェッショナルな青 */
-            letter-spacing: 0.05em;
+            color: #f57c00; /* オレンジ */
+            text-shadow: 2px 2px 0 #fff;
         }
         #container {
-            max-width: 600px;
+            max-width: 500px;
             margin: 0 auto;
             padding: 20px;
         }
-        #company-info-input {
-            width: 85%;
-            padding: 14px;
+        #keyword-input {
+            width: 80%;
+            padding: 12px;
             font-size: 1em;
             font-family: inherit;
-            border-radius: 8px;
-            border: 1px solid #ced4da;
+            border-radius: 20px;
+            border: 2px solid #fbc02d;
             margin-bottom: 20px;
+            text-align: center;
         }
         button {
-            padding: 14px 35px;
+            padding: 12px 30px;
             font-size: 1.1em;
-            font-weight: 700;
+            font-weight: bold;
             font-family: inherit;
             color: #fff;
-            background-color: #0d6efd;
+            background: linear-gradient(45deg, #f57c00, #ffb300);
             border: none;
-            border-radius: 8px;
+            border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(245, 124, 0, 0.4);
         }
         button:hover {
-            background-color: #0b5ed7;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.2);
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(245, 124, 0, 0.5);
         }
         #result-container {
-            margin-top: 40px;
+            margin-top: 30px;
             padding: 30px;
             background-color: #ffffff;
-            border-radius: 8px;
-            min-height: 200px;
-            line-height: 2.2;
-            text-align: left;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border-radius: 15px;
+            min-height: 120px;
+            line-height: 2.0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             white-space: pre-wrap;
+            font-size: 1.5em;
         }
         #loading {
             display: none;
-            color: #6c757d;
+            color: #a1887f;
         }
     </style>
 </head>
 <body>
     <div id="container">
-        <h1>架空の社名メーカー</h1>
-        <input type="text" id="company-info-input" placeholder="企業のコンセプトを入力 (例: IT系スタートアップ)">
+        <h1>ダジャレメーカー</h1>
+        <input type="text" id="keyword-input" placeholder="お題を入力 (例: 布団)">
         <br>
-        <button id="generate-btn">社名を生成する</button>
+        <button id="generate-btn">ダジャレを生成する</button>
         
         <div id="result-container">
-            <p id="result-text" style="text-align: center;">ここに、未来を創る社名が提案されます</p>
-            <p id="loading">最高の社名を考案中...</p>
+            <p id="result-text" style="font-size: 1em;">ここに、くだらなくて面白いダジャレが表示されます</p>
+            <p id="loading">腕によりをかけて考え中...</p>
         </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
-            const companyInfoInput = document.getElementById('company-info-input');
-            const companyInfo = companyInfoInput.value;
+            const keywordInput = document.getElementById('keyword-input');
+            const keyword = keywordInput.value;
 
-            if (!companyInfo.trim()) {
-                alert('企業のコンセプトを入力してください！');
+            if (!keyword.trim()) {
+                alert('お題となる言葉を入力してください！');
                 return;
             }
 
@@ -103,7 +102,7 @@
                 const response = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ company_info: companyInfo })
+                    body: JSON.stringify({ keyword: keyword })
                 });
 
                 const data = await response.json();
@@ -111,7 +110,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：良い社名が思いつきませんでした。';
+                    resultText.textContent = 'エラー：傑作ダジャレが思いつきませんでした。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';

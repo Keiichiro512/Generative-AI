@@ -19,33 +19,23 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def generate_company_name():
+def generate_pun():
     try:
         data = request.get_json()
-        if not data or 'company_info' not in data:
-            return jsonify({'error': '企業のコンセプトが指定されていません。'}), 400
+        if not data or 'keyword' not in data:
+            return jsonify({'error': 'キーワードが指定されていません。'}), 400
 
-        company_info = data['company_info']
+        keyword = data['keyword']
 
         # AIへの指示（プロンプト）
         prompt = f"""
-あなたは、数々の成功企業を世に送り出してきた、ブランディングの専門家です。
-クライアントから伝えられた企業のコンセプトに合った、未来的で覚えやすく、ドメインも取得できそうな架空の社名を3つ提案してください。
+あなたは、日本一のダジャレ職人です。どんな言葉でも、面白くてくだらないダジャレに変換することができます。
+今から指定する「キーワード」を使って、誰が聞いても思わず脱力してしまうような、面白いダジャレを1つ創作してください。
 
-【企業のコンセプト】
-{company_info}
+【キーワード】
+{keyword}
 
-提案する社名には、それぞれ簡単な「社名の由来やコンセプト」も添えてください。
-
-【出力フォーマット】
-1. **(社名1)**
-   由来：(社名の由来やコンセプトを簡潔に説明)
-
-2. **(社名2)**
-   由来：(社名の由来やコンセプトを簡潔に説明)
-
-3. **(社名3)**
-   由来：(社名の由来やコンセプトを簡潔に説明)
+ただの語呂合わせだけでなく、意外な状況設定やストーリーを少し加えると、より面白いダジャレになります。
 """
         
         response = model.generate_content(prompt)
@@ -55,7 +45,7 @@ def generate_company_name():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"社名生成中にエラー: {e}")
+        print(f"ダジャレ生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
