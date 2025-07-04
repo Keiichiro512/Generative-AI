@@ -3,93 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ダジャレメーカー</title>
+    <title>今日の目標設定ジェネレーター</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;800&display=swap');
         body {
-            font-family: 'Yusei Magic', sans-serif;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
             text-align: center;
-            margin-top: 40px;
-            background-color: #ffeb3b; /* 明るい黄色 */
-            color: #4e342e; /* 焦げ茶色 */
+            margin-top: 50px;
+            background-color: #f0f8ff; /* アリスブルー */
+            color: #2c3e50; /* 濃いスレートブルー */
         }
         h1 {
-            color: #f57c00; /* オレンジ */
-            text-shadow: 2px 2px 0 #fff;
+            font-weight: 800;
+            color: #3498db; /* 明るい青 */
         }
         #container {
-            max-width: 500px;
+            max-width: 550px;
             margin: 0 auto;
             padding: 20px;
         }
-        #keyword-input {
-            width: 80%;
-            padding: 12px;
-            font-size: 1em;
-            font-family: inherit;
-            border-radius: 20px;
-            border: 2px solid #fbc02d;
-            margin-bottom: 20px;
-            text-align: center;
-        }
         button {
-            padding: 12px 30px;
+            padding: 15px 35px;
             font-size: 1.1em;
-            font-weight: bold;
+            font-weight: 800;
             font-family: inherit;
             color: #fff;
-            background: linear-gradient(45deg, #f57c00, #ffb300);
+            background: linear-gradient(45deg, #5dade2, #3498db);
             border: none;
-            border-radius: 20px;
+            border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(245, 124, 0, 0.4);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
         }
         button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(245, 124, 0, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
         }
         #result-container {
-            margin-top: 30px;
-            padding: 30px;
+            margin-top: 40px;
+            padding: 40px;
             background-color: #ffffff;
             border-radius: 15px;
             min-height: 120px;
-            line-height: 2.0;
+            line-height: 1.9;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             white-space: pre-wrap;
-            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            color: #2c3e50;
         }
         #loading {
             display: none;
-            color: #a1887f;
+            color: #95a5a6;
         }
     </style>
 </head>
 <body>
     <div id="container">
-        <h1>ダジャレメーカー</h1>
-        <input type="text" id="keyword-input" placeholder="お題を入力 (例: 布団)">
-        <br>
-        <button id="generate-btn">ダジャレを生成する</button>
+        <h1>今日の目標設定ジェネレーター</h1>
+        <button id="generate-btn">今日の小さな目標を決める</button>
         
         <div id="result-container">
-            <p id="result-text" style="font-size: 1em;">ここに、くだらなくて面白いダジャレが表示されます</p>
-            <p id="loading">腕によりをかけて考え中...</p>
+            <p id="result-text">ボタンを押して、今日を素敵な一日にしよう</p>
+            <p id="loading">あなたに合った目標を考えています...</p>
         </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
-            const keywordInput = document.getElementById('keyword-input');
-            const keyword = keywordInput.value;
-
-            if (!keyword.trim()) {
-                alert('お題となる言葉を入力してください！');
-                return;
-            }
-
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
             const button = document.getElementById('generate-btn');
@@ -99,18 +83,13 @@
             button.disabled = true;
 
             try {
-                const response = await fetch('/generate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ keyword: keyword })
-                });
-
+                const response = await fetch('/generate', { method: 'POST' });
                 const data = await response.json();
 
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：傑作ダジャレが思いつきませんでした。';
+                    resultText.textContent = 'エラー：良い目標が思いつきませんでした。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';

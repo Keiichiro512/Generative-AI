@@ -19,23 +19,15 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def generate_pun():
+def generate_goal():
     try:
-        data = request.get_json()
-        if not data or 'keyword' not in data:
-            return jsonify({'error': 'キーワードが指定されていません。'}), 400
-
-        keyword = data['keyword']
-
         # AIへの指示（プロンプト）
-        prompt = f"""
-あなたは、日本一のダジャレ職人です。どんな言葉でも、面白くてくだらないダジャレに変換することができます。
-今から指定する「キーワード」を使って、誰が聞いても思わず脱力してしまうような、面白いダジャレを1つ創作してください。
+        prompt = """
+あなたは、人々の自己肯定感を高めるのが得意な、ポジティブなライフコーチです。
+今日一日で達成可能で、達成すると少しだけ生活が豊かになるような、具体的で「小さな目標」を1つだけ提案してください。
 
-【キーワード】
-{keyword}
-
-ただの語呂合わせだけでなく、意外な状況設定やストーリーを少し加えると、より面白いダジャレになります。
+壮大な目標ではなく、例えば「5分だけ部屋を片付ける」や「普段話さない同僚に挨拶してみる」のように、誰でも気軽に挑戦できるレベルのものが望ましいです。
+ポジティブで、実行したくなるような言い方でお願いします。
 """
         
         response = model.generate_content(prompt)
@@ -45,7 +37,7 @@ def generate_pun():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"ダジャレ生成中にエラー: {e}")
+        print(f"目標の生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
