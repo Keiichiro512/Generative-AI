@@ -19,15 +19,24 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def generate_goal():
+def convert_keigo():
     try:
-        # AIへの指示（プロンプト）
-        prompt = """
-あなたは、人々の自己肯定感を高めるのが得意な、ポジティブなライフコーチです。
-今日一日で達成可能で、達成すると少しだけ生活が豊かになるような、具体的で「小さな目標」を1つだけ提案してください。
+        data = request.get_json()
+        if not data or 'original_text' not in data:
+            return jsonify({'error': '元の文章が指定されていません。'}), 400
 
-壮大な目標ではなく、例えば「5分だけ部屋を片付ける」や「普段話さない同僚に挨拶してみる」のように、誰でも気軽に挑戦できるレベルのものが望ましいです。
-ポジティブで、実行したくなるような言い方でお願いします。
+        original_text = data['original_text']
+
+        # AIへの指示（プロンプト）
+        prompt = f"""
+あなたは、言語学の教授であり、日本語の敬語（尊敬語、謙譲語、丁寧語）に関する第一人者です。
+今から入力される文章を、ビジネスシーンで通用する、自然で丁寧な敬語に変換してください。
+
+【元の文章】
+{original_text}
+
+変換する際は、元の文章の意図やニュアンスを最大限に尊重し、過剰に丁寧すぎない、適切な表現を選んでください。
+変換後の文章のみを出力してください。
 """
         
         response = model.generate_content(prompt)
@@ -37,7 +46,7 @@ def generate_goal():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"目標の生成中にエラー: {e}")
+        print(f"敬語変換中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

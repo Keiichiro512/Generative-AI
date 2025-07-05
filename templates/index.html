@@ -3,93 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>今日の目標設定ジェネレーター</title>
+    <title>敬語変換ツール</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
-            font-family: 'M PLUS Rounded 1c', sans-serif;
+            font-family: 'Noto Sans JP', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f6f9; /* クリーンな背景色 */
+            color: #333;
+            display: flex;
+            justify-content: center;
+        }
+        #app-container {
+            width: 100%;
+            max-width: 700px;
             text-align: center;
-            margin-top: 50px;
-            background-color: #f0f8ff; /* アリスブルー */
-            color: #2c3e50; /* 濃いスレートブルー */
         }
         h1 {
-            font-weight: 800;
-            color: #3498db; /* 明るい青 */
+            font-weight: 700;
+            color: #2c3e50; /* 落ち着いた紺色 */
         }
-        #container {
-            max-width: 550px;
-            margin: 0 auto;
-            padding: 20px;
+        .textarea-container {
+            margin-bottom: 20px;
+        }
+        textarea, #result-area {
+            width: 95%;
+            height: 150px;
+            padding: 15px;
+            font-size: 1em;
+            font-family: inherit;
+            border-radius: 8px;
+            border: 1px solid #dcdfe6;
+            resize: vertical;
+        }
+        #result-area {
+            background-color: #fff;
+            text-align: left;
+            white-space: pre-wrap;
+            min-height: 150px;
+        }
+        label {
+            display: block;
+            text-align: left;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #606266;
         }
         button {
-            padding: 15px 35px;
+            padding: 14px 40px;
             font-size: 1.1em;
-            font-weight: 800;
+            font-weight: 700;
             font-family: inherit;
             color: #fff;
-            background: linear-gradient(45deg, #5dade2, #3498db);
+            background-color: #409eff;
             border: none;
-            border-radius: 50px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
         }
         button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
-        }
-        #result-container {
-            margin-top: 40px;
-            padding: 40px;
-            background-color: #ffffff;
-            border-radius: 15px;
-            min-height: 120px;
-            line-height: 1.9;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            white-space: pre-wrap;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3em;
-            color: #2c3e50;
+            background-color: #337ecc;
+            box-shadow: 0 4px 10px rgba(64, 158, 255, 0.2);
         }
         #loading {
             display: none;
-            color: #95a5a6;
+            color: #909399;
         }
     </style>
 </head>
 <body>
-    <div id="container">
-        <h1>今日の目標設定ジェネレーター</h1>
-        <button id="generate-btn">今日の小さな目標を決める</button>
+    <div id="app-container">
+        <h1>敬語変換ツール</h1>
         
-        <div id="result-container">
-            <p id="result-text">ボタンを押して、今日を素敵な一日にしよう</p>
-            <p id="loading">あなたに合った目標を考えています...</p>
+        <div class="textarea-container">
+            <label for="original-text">元の文章</label>
+            <textarea id="original-text" placeholder="ここに変換したい文章を入力してください。(例：明日、資料送っておきます。見といてください。)"></textarea>
+        </div>
+        
+        <button id="convert-btn">丁寧な敬語に変換する</button>
+        
+        <div class="textarea-container" style="margin-top: 20px;">
+            <label>変換後の文章</label>
+            <div id="result-area">
+                <p id="result-text" style="color: #909399;">ここに変換後の文章が表示されます</p>
+                <p id="loading">変換中...</p>
+            </div>
         </div>
     </div>
 
     <script>
-        document.getElementById('generate-btn').addEventListener('click', async () => {
+        document.getElementById('convert-btn').addEventListener('click', async () => {
+            const originalTextarea = document.getElementById('original-text');
+            const originalText = originalTextarea.value;
+
+            if (!originalText.trim()) {
+                alert('変換したい文章を入力してください！');
+                return;
+            }
+
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
-            const button = document.getElementById('generate-btn');
+            const button = document.getElementById('convert-btn');
 
             resultText.style.display = 'none';
             loadingElement.style.display = 'block';
             button.disabled = true;
 
             try {
-                const response = await fetch('/generate', { method: 'POST' });
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ original_text: originalText })
+                });
+
                 const data = await response.json();
 
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：良い目標が思いつきませんでした。';
+                    resultText.textContent = 'エラー：変換に失敗しました。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
