@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>敬語変換ツール</title>
+    <title>3行要約ツール</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
             font-family: 'Noto Sans JP', sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f4f6f9; /* クリーンな背景色 */
+            background-color: #f4f6f9;
             color: #333;
             display: flex;
             justify-content: center;
@@ -22,14 +22,14 @@
         }
         h1 {
             font-weight: 700;
-            color: #2c3e50; /* 落ち着いた紺色 */
+            color: #2c3e50;
         }
         .textarea-container {
             margin-bottom: 20px;
         }
         textarea, #result-area {
             width: 95%;
-            height: 150px;
+            height: 180px; /* 少し高さを大きくする */
             padding: 15px;
             font-size: 1em;
             font-family: inherit;
@@ -41,7 +41,8 @@
             background-color: #fff;
             text-align: left;
             white-space: pre-wrap;
-            min-height: 150px;
+            min-height: 100px; /* 結果表示エリアの最小高さを調整 */
+            height: auto;
         }
         label {
             display: block;
@@ -74,20 +75,20 @@
 </head>
 <body>
     <div id="app-container">
-        <h1>敬語変換ツール</h1>
+        <h1>3行要約ツール</h1>
         
         <div class="textarea-container">
-            <label for="original-text">元の文章</label>
-            <textarea id="original-text" placeholder="ここに変換したい文章を入力してください。(例：明日、資料送っておきます。見といてください。)"></textarea>
+            <label for="original-text">要約したい文章</label>
+            <textarea id="original-text" placeholder="ここに要約したい文章を貼り付けてください..."></textarea>
         </div>
         
-        <button id="convert-btn">丁寧な敬語に変換する</button>
+        <button id="convert-btn">3行で要約する</button>
         
         <div class="textarea-container" style="margin-top: 20px;">
-            <label>変換後の文章</label>
+            <label>要約結果</label>
             <div id="result-area">
-                <p id="result-text" style="color: #909399;">ここに変換後の文章が表示されます</p>
-                <p id="loading">変換中...</p>
+                <p id="result-text" style="color: #909399;">ここに要約結果が表示されます</p>
+                <p id="loading">要約中...</p>
             </div>
         </div>
     </div>
@@ -98,7 +99,7 @@
             const originalText = originalTextarea.value;
 
             if (!originalText.trim()) {
-                alert('変換したい文章を入力してください！');
+                alert('要約したい文章を入力してください！');
                 return;
             }
 
@@ -122,7 +123,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：変換に失敗しました。';
+                    resultText.textContent = 'エラー：要約に失敗しました。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';

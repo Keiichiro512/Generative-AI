@@ -19,7 +19,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def convert_keigo():
+def summarize_text():
     try:
         data = request.get_json()
         if not data or 'original_text' not in data:
@@ -29,14 +29,13 @@ def convert_keigo():
 
         # AIへの指示（プロンプト）
         prompt = f"""
-あなたは、言語学の教授であり、日本語の敬語（尊敬語、謙譲語、丁寧語）に関する第一人者です。
-今から入力される文章を、ビジネスシーンで通用する、自然で丁寧な敬語に変換してください。
+あなたは、長文の読解と要点抽出に長けた、優秀な編集者です。
+今から入力される文章の要点を的確に捉え、最も重要な部分を抽出し、日本語で3行の簡潔な箇条書きで要約してください。
 
 【元の文章】
 {original_text}
 
-変換する際は、元の文章の意図やニュアンスを最大限に尊重し、過剰に丁寧すぎない、適切な表現を選んでください。
-変換後の文章のみを出力してください。
+要約する際は、元の文章の核心的なメッセージを維持し、専門用語もできるだけ分かりやすい言葉で表現してください。
 """
         
         response = model.generate_content(prompt)
@@ -46,7 +45,7 @@ def convert_keigo():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"敬語変換中にエラー: {e}")
+        print(f"要約中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
