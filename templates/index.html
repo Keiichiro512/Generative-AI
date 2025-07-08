@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ポジティブ変換ツール</title>
+    <title>箇条書きコンバーター</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
-            font-family: 'M PLUS Rounded 1c', sans-serif;
+            font-family: 'Noto Sans JP', sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #fffbeb; /* 明るいレモン色 */
-            color: #4b5563; /* 落ち着いたグレー */
+            background-color: #f4f6f9;
+            color: #333;
             display: flex;
             justify-content: center;
         }
@@ -21,74 +21,74 @@
             text-align: center;
         }
         h1 {
-            font-weight: 800;
-            color: #f59e0b; /* 元気なオレンジ */
+            font-weight: 700;
+            color: #2c3e50;
         }
         .textarea-container {
             margin-bottom: 20px;
         }
         textarea, #result-area {
             width: 95%;
-            height: 150px;
+            height: 180px;
             padding: 15px;
             font-size: 1em;
             font-family: inherit;
             border-radius: 8px;
-            border: 1px solid #fed7aa;
+            border: 1px solid #dcdfe6;
             resize: vertical;
         }
         #result-area {
             background-color: #fff;
             text-align: left;
             white-space: pre-wrap;
-            min-height: 150px;
+            min-height: 180px;
             height: auto;
         }
         label {
             display: block;
             text-align: left;
-            font-weight: 800;
+            font-weight: 700;
             margin-bottom: 8px;
-            color: #fbbf24;
+            color: #606266;
         }
         button {
             padding: 14px 40px;
             font-size: 1.1em;
-            font-weight: 800;
+            font-weight: 700;
             font-family: inherit;
             color: #fff;
-            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            background-color: #409eff;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3);
+            background-color: #337ecc;
+            box-shadow: 0 4px 10px rgba(64, 158, 255, 0.2);
         }
         #loading {
             display: none;
-            color: #a16207;
+            color: #909399;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>ポジティブ変換ツール</h1>
+        <h1>箇条書きコンバーター</h1>
         
         <div class="textarea-container">
             <label for="original-text">元の文章</label>
-            <textarea id="original-text" placeholder="ここに、気持ちを書き出してみてください。(例：また仕事でミスしてしまった…)"></textarea>
+            <textarea id="original-text" placeholder="ここに、箇条書きにしたい文章を貼り付けてください..."></textarea>
         </div>
         
-        <button id="convert-btn">ポジティブに変換する</button>
+        <button id="convert-btn">箇条書きに変換する</button>
         
         <div class="textarea-container" style="margin-top: 20px;">
-            <label>新しい視点</label>
+            <label>変換結果</label>
             <div id="result-area">
-                <p id="result-text" style="color: #9ca3af;">ここに、物事の新しい捉え方が表示されます</p>
-                <p id="loading">視点を変えています...</p>
+                <p id="result-text" style="color: #909399;">ここに箇条書きに変換された文章が表示されます</p>
+                <p id="loading">要点を抽出中...</p>
             </div>
         </div>
     </div>
