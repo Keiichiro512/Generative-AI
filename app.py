@@ -19,7 +19,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def summarize_text():
+def check_text():
     try:
         data = request.get_json()
         if not data or 'original_text' not in data:
@@ -29,13 +29,19 @@ def summarize_text():
 
         # AIへの指示（プロンプト）
         prompt = f"""
-あなたは、長文の読解と要点抽出に長けた、優秀な編集者です。
-今から入力される文章の要点を的確に捉え、最も重要な部分を抽出し、日本語で3行の簡潔な箇条書きで要約してください。
+あなたは、出版社に勤務する、経験豊富な校正者です。
+今から入力される日本語の文章をプロの目でチェックし、誤字、脱字、文法的な誤り、不自然な表現をすべて指摘してください。
 
 【元の文章】
 {original_text}
 
-要約する際は、元の文章の核心的なメッセージを維持し、専門用語もできるだけ分かりやすい言葉で表現してください。
+指摘する際は、単に修正後の文章を提示するのではなく、どの部分がなぜ間違っているのか、そしてどのように修正すれば良いのかを、箇条書きで分かりやすく説明してください。
+もし誤りが見つからなかった場合は、「この文章に明らかな誤字脱字は見つかりませんでした。」と回答してください。
+
+【出力フォーマット】
+- 指摘箇所：「(間違いのある部分を引用)」
+  問題点：(なぜ間違っているかの説明)
+  修正案：「(正しい表現の提案)」
 """
         
         response = model.generate_content(prompt)
@@ -45,7 +51,7 @@ def summarize_text():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"要約中にエラー: {e}")
+        print(f"校正中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

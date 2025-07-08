@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3行要約ツール</title>
+    <title>誤字脱字チェッカー</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
@@ -29,7 +29,7 @@
         }
         textarea, #result-area {
             width: 95%;
-            height: 180px; /* 少し高さを大きくする */
+            height: 180px;
             padding: 15px;
             font-size: 1em;
             font-family: inherit;
@@ -41,7 +41,7 @@
             background-color: #fff;
             text-align: left;
             white-space: pre-wrap;
-            min-height: 100px; /* 結果表示エリアの最小高さを調整 */
+            min-height: 180px;
             height: auto;
         }
         label {
@@ -75,20 +75,20 @@
 </head>
 <body>
     <div id="app-container">
-        <h1>3行要約ツール</h1>
+        <h1>誤字脱字チェッカー</h1>
         
         <div class="textarea-container">
-            <label for="original-text">要約したい文章</label>
-            <textarea id="original-text" placeholder="ここに要約したい文章を貼り付けてください..."></textarea>
+            <label for="original-text">チェックしたい文章</label>
+            <textarea id="original-text" placeholder="ここにチェックしたい文章を貼り付けてください..."></textarea>
         </div>
         
-        <button id="convert-btn">3行で要約する</button>
+        <button id="convert-btn">誤字脱字をチェックする</button>
         
         <div class="textarea-container" style="margin-top: 20px;">
-            <label>要約結果</label>
+            <label>チェック結果</label>
             <div id="result-area">
-                <p id="result-text" style="color: #909399;">ここに要約結果が表示されます</p>
-                <p id="loading">要約中...</p>
+                <p id="result-text" style="color: #909399;">ここにチェック結果が表示されます</p>
+                <p id="loading">チェック中...</p>
             </div>
         </div>
     </div>
@@ -99,7 +99,7 @@
             const originalText = originalTextarea.value;
 
             if (!originalText.trim()) {
-                alert('要約したい文章を入力してください！');
+                alert('チェックしたい文章を入力してください！');
                 return;
             }
 
@@ -123,7 +123,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：要約に失敗しました。';
+                    resultText.textContent = 'エラー：チェックに失敗しました。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
