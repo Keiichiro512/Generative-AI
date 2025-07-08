@@ -19,7 +19,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def check_text():
+def reframe_to_positive():
     try:
         data = request.get_json()
         if not data or 'original_text' not in data:
@@ -29,19 +29,21 @@ def check_text():
 
         # AIへの指示（プロンプト）
         prompt = f"""
-あなたは、出版社に勤務する、経験豊富な校正者です。
-今から入力される日本語の文章をプロの目でチェックし、誤字、脱字、文法的な誤り、不自然な表現をすべて指摘してください。
+あなたは、認知行動療法（CBT）と思考のリフレーミングの専門家です。
+今から入力される、ネガティブな、あるいは中立的な文章を、自己肯定感を高めるような、前向きでポジティブな文章に書き換えてください。
 
 【元の文章】
 {original_text}
 
-指摘する際は、単に修正後の文章を提示するのではなく、どの部分がなぜ間違っているのか、そしてどのように修正すれば良いのかを、箇条書きで分かりやすく説明してください。
-もし誤りが見つからなかった場合は、「この文章に明らかな誤字脱字は見つかりませんでした。」と回答してください。
+変換する際は、元の事実を歪めるのではなく、物事の捉え方や視点を変えることで、ポジティブな側面に光を当てるようにしてください。
+修正後の文章だけでなく、なぜそのように捉え直せるのか、簡単な「視点のヒント」も添えてください。
 
 【出力フォーマット】
-- 指摘箇所：「(間違いのある部分を引用)」
-  問題点：(なぜ間違っているかの説明)
-  修正案：「(正しい表現の提案)」
+ポジティブな捉え方：
+「(ここにポジティブに変換した文章)」
+
+視点のヒント：
+(なぜそのように考えられるのか、簡単な解説)
 """
         
         response = model.generate_content(prompt)
@@ -51,7 +53,7 @@ def check_text():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"校正中にエラー: {e}")
+        print(f"ポジティブ変換中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

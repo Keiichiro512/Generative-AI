@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>誤字脱字チェッカー</title>
+    <title>ポジティブ変換ツール</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;800&display=swap');
         body {
-            font-family: 'Noto Sans JP', sans-serif;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f4f6f9;
-            color: #333;
+            background-color: #fffbeb; /* 明るいレモン色 */
+            color: #4b5563; /* 落ち着いたグレー */
             display: flex;
             justify-content: center;
         }
@@ -21,74 +21,74 @@
             text-align: center;
         }
         h1 {
-            font-weight: 700;
-            color: #2c3e50;
+            font-weight: 800;
+            color: #f59e0b; /* 元気なオレンジ */
         }
         .textarea-container {
             margin-bottom: 20px;
         }
         textarea, #result-area {
             width: 95%;
-            height: 180px;
+            height: 150px;
             padding: 15px;
             font-size: 1em;
             font-family: inherit;
             border-radius: 8px;
-            border: 1px solid #dcdfe6;
+            border: 1px solid #fed7aa;
             resize: vertical;
         }
         #result-area {
             background-color: #fff;
             text-align: left;
             white-space: pre-wrap;
-            min-height: 180px;
+            min-height: 150px;
             height: auto;
         }
         label {
             display: block;
             text-align: left;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 8px;
-            color: #606266;
+            color: #fbbf24;
         }
         button {
             padding: 14px 40px;
             font-size: 1.1em;
-            font-weight: 700;
+            font-weight: 800;
             font-family: inherit;
             color: #fff;
-            background-color: #409eff;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
             border: none;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         button:hover {
-            background-color: #337ecc;
-            box-shadow: 0 4px 10px rgba(64, 158, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3);
         }
         #loading {
             display: none;
-            color: #909399;
+            color: #a16207;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>誤字脱字チェッカー</h1>
+        <h1>ポジティブ変換ツール</h1>
         
         <div class="textarea-container">
-            <label for="original-text">チェックしたい文章</label>
-            <textarea id="original-text" placeholder="ここにチェックしたい文章を貼り付けてください..."></textarea>
+            <label for="original-text">元の文章</label>
+            <textarea id="original-text" placeholder="ここに、気持ちを書き出してみてください。(例：また仕事でミスしてしまった…)"></textarea>
         </div>
         
-        <button id="convert-btn">誤字脱字をチェックする</button>
+        <button id="convert-btn">ポジティブに変換する</button>
         
         <div class="textarea-container" style="margin-top: 20px;">
-            <label>チェック結果</label>
+            <label>新しい視点</label>
             <div id="result-area">
-                <p id="result-text" style="color: #909399;">ここにチェック結果が表示されます</p>
-                <p id="loading">チェック中...</p>
+                <p id="result-text" style="color: #9ca3af;">ここに、物事の新しい捉え方が表示されます</p>
+                <p id="loading">視点を変えています...</p>
             </div>
         </div>
     </div>
@@ -99,7 +99,7 @@
             const originalText = originalTextarea.value;
 
             if (!originalText.trim()) {
-                alert('チェックしたい文章を入力してください！');
+                alert('変換したい文章を入力してください！');
                 return;
             }
 
@@ -123,7 +123,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：チェックに失敗しました。';
+                    resultText.textContent = 'エラー：変換に失敗しました。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
