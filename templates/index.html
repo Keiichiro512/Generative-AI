@@ -3,110 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>絵文字提案ツール</title>
+    <title>ビジネスメール作成ツール</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=M+PLUS+Rounded+1c:wght@400;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
-            font-family: 'M PLUS Rounded 1c', sans-serif;
-            text-align: center;
+            font-family: 'Noto Sans JP', sans-serif;
             margin: 0;
             padding: 20px;
-            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); /* 明るいグラデーション */
-            color: #333;
+            background-color: #f8f9fa;
+            color: #212529;
+            display: flex;
+            justify-content: center;
         }
         #app-container {
             width: 100%;
-            max-width: 600px;
-            margin: 40px auto;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
+            max-width: 800px; /* 少し幅を広げる */
+            text-align: center;
         }
         h1 {
-            font-family: 'Poppins', sans-serif;
             font-weight: 700;
-            color: #d9480f;
+            color: #343a40;
+        }
+        .textarea-container {
+            margin-bottom: 20px;
         }
         textarea, #result-area {
             width: 95%;
+            height: 200px;
             padding: 15px;
             font-size: 1em;
             font-family: inherit;
-            border-radius: 10px;
-            border: 1px solid #fcc419;
+            border-radius: 8px;
+            border: 1px solid #dcdfe6;
             resize: vertical;
-        }
-        textarea {
-            height: 120px;
         }
         #result-area {
             background-color: #fff;
             text-align: left;
             white-space: pre-wrap;
-            min-height: 150px;
+            min-height: 200px;
             height: auto;
-            margin-top: 20px;
         }
         label {
             display: block;
             text-align: left;
-            font-weight: 800;
-            margin: 20px 0 8px 0;
-            color: #f59f00;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #495057;
         }
         button {
             padding: 14px 40px;
             font-size: 1.1em;
-            font-weight: 800;
+            font-weight: 700;
             font-family: inherit;
             color: #fff;
-            background: linear-gradient(45deg, #f76707, #f59f00);
+            background-color: #007bff;
             border: none;
-            border-radius: 50px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(247, 103, 7, 0.4);
         }
         button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(247, 103, 7, 0.5);
+            background-color: #0056b3;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
         }
         #loading {
             display: none;
-            color: #f76707;
+            color: #6c757d;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>絵文字提案ツール 🥳</h1>
+        <h1>ビジネスメール作成ツール</h1>
         
-        <div>
-            <label for="original-text">文章</label>
-            <textarea id="original-text" placeholder="ここに絵文字を合わせたい文章を入力... (例: 週末のキャンプ、最高だった！🏕️)"></textarea>
+        <div class="textarea-container">
+            <label for="requirements-input">伝えたい要件</label>
+            <textarea id="requirements-input" placeholder="伝えたい要件を箇条書きで入力してください。
+例：
+・A社B様宛
+・C案件の進捗報告
+・資料を添付
+・来週水曜までに確認をお願いしたい"></textarea>
         </div>
         
-        <button id="convert-btn">絵文字を提案してもらう</button>
+        <button id="convert-btn">ビジネスメールを作成する</button>
         
-        <div>
-            <label>提案結果</label>
+        <div class="textarea-container" style="margin-top: 20px;">
+            <label>生成されたメール文面</label>
             <div id="result-area">
-                <p id="result-text" style="color: #adb5bd; text-align:center;">ここに、文章にぴったりの絵文字が提案されます</p>
-                <p id="loading">ぴったりの絵文字を探しています...</p>
+                <p id="result-text" style="color: #909399;">ここに、すぐに使えるビジネスメールの文章が生成されます</p>
+                <p id="loading">最適な文章を作成中...</p>
             </div>
         </div>
     </div>
 
     <script>
         document.getElementById('convert-btn').addEventListener('click', async () => {
-            const originalTextarea = document.getElementById('original-text');
-            const originalText = originalTextarea.value;
+            const requirementsTextarea = document.getElementById('requirements-input');
+            const requirements = requirementsTextarea.value;
 
-            if (!originalText.trim()) {
-                alert('文章を入力してください！');
+            if (!requirements.trim()) {
+                alert('伝えたい要件を入力してください！');
                 return;
             }
 
@@ -122,7 +120,7 @@
                 const response = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ original_text: originalText })
+                    body: JSON.stringify({ requirements: requirements })
                 });
 
                 const data = await response.json();
@@ -130,7 +128,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：良い絵文字が思いつきませんでした。';
+                    resultText.textContent = 'エラー：メールの作成に失敗しました。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';

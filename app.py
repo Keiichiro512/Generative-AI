@@ -19,28 +19,24 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def suggest_emojis():
+def create_business_email():
     try:
         data = request.get_json()
-        if not data or 'original_text' not in data:
-            return jsonify({'error': '元の文章が指定されていません。'}), 400
+        if not data or 'requirements' not in data:
+            return jsonify({'error': '要件が指定されていません。'}), 400
 
-        original_text = data['original_text']
+        requirements = data['requirements']
 
         # AIへの指示（プロンプト）
         prompt = f"""
-あなたは、世界中のSNSで活躍する、絵文字の使い方の達人です。
-今から入力される文章の文脈や感情を読み取り、その文章に添えるのに最適な絵文字を3つ提案してください。
+あなたは、外資系コンサルティングファームに勤務する、経験豊富なビジネスパーソンです。
+クライアントから伝えられた以下の「伝えたい要件」を元に、そのまま送れるレベルの、丁寧で分かりやすいビジネスメールの文章を作成してください。
 
-【元の文章】
-{original_text}
+【伝えたい要件】
+{requirements}
 
-絵文字を提案する際は、それぞれの絵文字がなぜその文章に合うのか、簡単な理由も添えてください。
-
-【出力フォーマット】
-1. (絵文字1) 理由：(なぜ合うかの簡単な説明)
-2. (絵文字2) 理由：(なぜ合うかの簡単な説明)
-3. (絵文字3) 理由：(なぜ合うかの簡単な説明)
+メールを作成する際は、件名、宛名、挨拶、結びの言葉まで含めて、ビジネスメールの正式なフォーマットに沿ってください。
+元の要件の意図を汲み取り、相手に失礼のない、かつ要点が明確に伝わる文章構成にしてください。
 """
         
         response = model.generate_content(prompt)
@@ -50,7 +46,7 @@ def suggest_emojis():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"絵文字提案中にエラー: {e}")
+        print(f"ビジネスメール作成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
