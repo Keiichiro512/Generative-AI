@@ -19,7 +19,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def convertToBulletedList():
+def suggest_emojis():
     try:
         data = request.get_json()
         if not data or 'original_text' not in data:
@@ -29,14 +29,18 @@ def convertToBulletedList():
 
         # AIへの指示（プロンプト）
         prompt = f"""
-あなたは、情報整理と構造化のプロフェッショナルです。
-今から入力される文章を読み解き、その中から主要なトピックや要点を抽出し、簡潔で分かりやすい箇条書きリストに変換してください。
+あなたは、世界中のSNSで活躍する、絵文字の使い方の達人です。
+今から入力される文章の文脈や感情を読み取り、その文章に添えるのに最適な絵文字を3つ提案してください。
 
 【元の文章】
 {original_text}
 
-変換する際は、元の文章の意図を保ちつつ、各項目が独立した明確な情報になるように整理してください。
-箇条書きの各項目の先頭には「・」（中黒）を使用してください。
+絵文字を提案する際は、それぞれの絵文字がなぜその文章に合うのか、簡単な理由も添えてください。
+
+【出力フォーマット】
+1. (絵文字1) 理由：(なぜ合うかの簡単な説明)
+2. (絵文字2) 理由：(なぜ合うかの簡単な説明)
+3. (絵文字3) 理由：(なぜ合うかの簡単な説明)
 """
         
         response = model.generate_content(prompt)
@@ -46,7 +50,7 @@ def convertToBulletedList():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"箇条書き変換中にエラー: {e}")
+        print(f"絵文字提案中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
