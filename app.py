@@ -19,24 +19,24 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def create_business_email():
+def convert_to_kansai_ben():
     try:
         data = request.get_json()
-        if not data or 'requirements' not in data:
-            return jsonify({'error': '要件が指定されていません。'}), 400
+        if not data or 'original_text' not in data:
+            return jsonify({'error': '元の文章が指定されていません。'}), 400
 
-        requirements = data['requirements']
+        original_text = data['original_text']
 
         # AIへの指示（プロンプト）
         prompt = f"""
-あなたは、外資系コンサルティングファームに勤務する、経験豊富なビジネスパーソンです。
-クライアントから伝えられた以下の「伝えたい要件」を元に、そのまま送れるレベルの、丁寧で分かりやすいビジネスメールの文章を作成してください。
+あなたは、大阪生まれ大阪育ちの、生粋の関西人です。
+今から入力される標準語の文章を、まるでネイティブが話しているかのような、自然で面白い関西弁に変換してください。
 
-【伝えたい要件】
-{requirements}
+【元の文章】
+{original_text}
 
-メールを作成する際は、件名、宛名、挨拶、結びの言葉まで含めて、ビジネスメールの正式なフォーマットに沿ってください。
-元の要件の意図を汲み取り、相手に失礼のない、かつ要点が明確に伝わる文章構成にしてください。
+変換する際は、単に語尾を「～やで」「～ねん」に変えるだけでなく、イントネーションや言葉の選び方、ユーモアのセンスまで、関西人らしいニュアンスを完全に再現してください。
+変換後の文章のみを出力してください。
 """
         
         response = model.generate_content(prompt)
@@ -46,7 +46,7 @@ def create_business_email():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"ビジネスメール作成中にエラー: {e}")
+        print(f"関西弁変換中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

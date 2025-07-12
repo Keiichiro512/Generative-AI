@@ -3,108 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ビジネスメール作成ツール</title>
+    <title>関西弁変換ツール</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@500&display=swap');
         body {
-            font-family: 'Noto Sans JP', sans-serif;
+            font-family: 'Kiwi Maru', serif;
             margin: 0;
             padding: 20px;
-            background-color: #f8f9fa;
-            color: #212529;
+            background-color: #fef3c7; /* 明るい黄色 */
+            color: #78350f; /* 茶色 */
             display: flex;
             justify-content: center;
         }
         #app-container {
             width: 100%;
-            max-width: 800px; /* 少し幅を広げる */
+            max-width: 700px;
             text-align: center;
         }
         h1 {
-            font-weight: 700;
-            color: #343a40;
+            font-weight: 500;
+            color: #f97316; /* オレンジ */
+            font-size: 2.5em;
         }
         .textarea-container {
             margin-bottom: 20px;
         }
         textarea, #result-area {
             width: 95%;
-            height: 200px;
+            height: 160px;
             padding: 15px;
             font-size: 1em;
             font-family: inherit;
             border-radius: 8px;
-            border: 1px solid #dcdfe6;
+            border: 2px solid #fbbf24;
             resize: vertical;
         }
         #result-area {
             background-color: #fff;
             text-align: left;
             white-space: pre-wrap;
-            min-height: 200px;
+            min-height: 160px;
             height: auto;
         }
         label {
             display: block;
             text-align: left;
-            font-weight: 700;
+            font-weight: 500;
             margin-bottom: 8px;
-            color: #495057;
+            color: #d97706;
         }
         button {
             padding: 14px 40px;
             font-size: 1.1em;
-            font-weight: 700;
+            font-weight: 500;
             font-family: inherit;
             color: #fff;
-            background-color: #007bff;
+            background: linear-gradient(45deg, #f97316, #fbbf24);
             border: none;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         button:hover {
-            background-color: #0056b3;
-            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
         }
         #loading {
             display: none;
-            color: #6c757d;
+            color: #92400e;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>ビジネスメール作成ツール</h1>
+        <h1>関西弁変換ツール</h1>
         
         <div class="textarea-container">
-            <label for="requirements-input">伝えたい要件</label>
-            <textarea id="requirements-input" placeholder="伝えたい要件を箇条書きで入力してください。
-例：
-・A社B様宛
-・C案件の進捗報告
-・資料を添付
-・来週水曜までに確認をお願いしたい"></textarea>
+            <label for="original-text">標準語の文章</label>
+            <textarea id="original-text" placeholder="ここに関西弁に変換したい文章を入力してや～。"></textarea>
         </div>
         
-        <button id="convert-btn">ビジネスメールを作成する</button>
+        <button id="convert-btn">ええ感じに関西弁へ変換する</button>
         
         <div class="textarea-container" style="margin-top: 20px;">
-            <label>生成されたメール文面</label>
+            <label>変換結果</label>
             <div id="result-area">
-                <p id="result-text" style="color: #909399;">ここに、すぐに使えるビジネスメールの文章が生成されます</p>
-                <p id="loading">最適な文章を作成中...</p>
+                <p id="result-text" style="color: #a1a1aa;">ここに関西弁が表示されるで！</p>
+                <p id="loading">変換中やで、ちょっと待っててな...</p>
             </div>
         </div>
     </div>
 
     <script>
         document.getElementById('convert-btn').addEventListener('click', async () => {
-            const requirementsTextarea = document.getElementById('requirements-input');
-            const requirements = requirementsTextarea.value;
+            const originalTextarea = document.getElementById('original-text');
+            const originalText = originalTextarea.value;
 
-            if (!requirements.trim()) {
-                alert('伝えたい要件を入力してください！');
+            if (!originalText.trim()) {
+                alert('変換したい文章を入力してや！');
                 return;
             }
 
@@ -120,7 +116,7 @@
                 const response = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ requirements: requirements })
+                    body: JSON.stringify({ original_text: originalText })
                 });
 
                 const data = await response.json();
@@ -128,10 +124,10 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：メールの作成に失敗しました。';
+                    resultText.textContent = 'エラーや！うまく変換でけへんかったわ。';
                 }
             } catch (error) {
-                resultText.textContent = '通信エラーです。';
+                resultText.textContent = '通信エラーやで。';
             } finally {
                 resultText.style.display = 'block';
                 loadingElement.style.display = 'none';
