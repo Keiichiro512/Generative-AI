@@ -19,7 +19,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def convert_to_kansai_ben():
+def change_tone():
     try:
         data = request.get_json()
         if not data or 'original_text' not in data:
@@ -29,13 +29,14 @@ def convert_to_kansai_ben():
 
         # AIへの指示（プロンプト）
         prompt = f"""
-あなたは、大阪生まれ大阪育ちの、生粋の関西人です。
-今から入力される標準語の文章を、まるでネイティブが話しているかのような、自然で面白い関西弁に変換してください。
+あなたは、優れたコミュニケーターであり、文章のトーン＆マナーを調整する専門家です。
+今から入力される文章の核心的な意味を変えずに、もっと親しみやすく、フレンドリーなトーンに書き換えてください。
 
 【元の文章】
 {original_text}
 
-変換する際は、単に語尾を「～やで」「～ねん」に変えるだけでなく、イントネーションや言葉の選び方、ユーモアのセンスまで、関西人らしいニュアンスを完全に再現してください。
+変換する際は、絵文字を適切に使ったり、少しだけ砕けた表現を用いたりして、相手にポジティブな印象を与えるように工夫してください。
+ただし、ビジネスシーンでも使える範囲の、丁寧さは失わないようにしてください。
 変換後の文章のみを出力してください。
 """
         
@@ -46,7 +47,7 @@ def convert_to_kansai_ben():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"関西弁変換中にエラー: {e}")
+        print(f"トーン変更中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

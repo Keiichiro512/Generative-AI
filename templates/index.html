@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>関西弁変換ツール</title>
+    <title>文章のトーン変更ツール</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;800&display=swap');
         body {
-            font-family: 'Kiwi Maru', serif;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #fef3c7; /* 明るい黄色 */
-            color: #78350f; /* 茶色 */
+            background-color: #ecfdf5; /* 優しいミントグリーン */
+            color: #064e3b; /* 濃い緑 */
             display: flex;
             justify-content: center;
         }
@@ -21,9 +21,8 @@
             text-align: center;
         }
         h1 {
-            font-weight: 500;
-            color: #f97316; /* オレンジ */
-            font-size: 2.5em;
+            font-weight: 800;
+            color: #10b981; /* エメラルドグリーン */
         }
         .textarea-container {
             margin-bottom: 20px;
@@ -35,7 +34,7 @@
             font-size: 1em;
             font-family: inherit;
             border-radius: 8px;
-            border: 2px solid #fbbf24;
+            border: 1px solid #a7f3d0;
             resize: vertical;
         }
         #result-area {
@@ -48,48 +47,48 @@
         label {
             display: block;
             text-align: left;
-            font-weight: 500;
+            font-weight: 800;
             margin-bottom: 8px;
-            color: #d97706;
+            color: #059669;
         }
         button {
             padding: 14px 40px;
             font-size: 1.1em;
-            font-weight: 500;
+            font-weight: 800;
             font-family: inherit;
             color: #fff;
-            background: linear-gradient(45deg, #f97316, #fbbf24);
+            background: linear-gradient(45deg, #34d399, #10b981);
             border: none;
-            border-radius: 8px;
+            border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
         }
         #loading {
             display: none;
-            color: #92400e;
+            color: #10b981;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>関西弁変換ツール</h1>
+        <h1>文章のトーン変更ツール</h1>
         
         <div class="textarea-container">
-            <label for="original-text">標準語の文章</label>
-            <textarea id="original-text" placeholder="ここに関西弁に変換したい文章を入力してや～。"></textarea>
+            <label for="original-text">元の文章</label>
+            <textarea id="original-text" placeholder="ここにトーンを変更したい文章を入力してください..."></textarea>
         </div>
         
-        <button id="convert-btn">ええ感じに関西弁へ変換する</button>
+        <button id="convert-btn">フレンドリーなトーンに変換する</button>
         
         <div class="textarea-container" style="margin-top: 20px;">
             <label>変換結果</label>
             <div id="result-area">
-                <p id="result-text" style="color: #a1a1aa;">ここに関西弁が表示されるで！</p>
-                <p id="loading">変換中やで、ちょっと待っててな...</p>
+                <p id="result-text" style="color: #a1a1aa;">ここに、もっと伝わる文章が表示されます</p>
+                <p id="loading">トーンを調整中...</p>
             </div>
         </div>
     </div>
@@ -100,7 +99,7 @@
             const originalText = originalTextarea.value;
 
             if (!originalText.trim()) {
-                alert('変換したい文章を入力してや！');
+                alert('変換したい文章を入力してください！');
                 return;
             }
 
@@ -124,10 +123,10 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラーや！うまく変換でけへんかったわ。';
+                    resultText.textContent = 'エラー：変換に失敗しました。';
                 }
             } catch (error) {
-                resultText.textContent = '通信エラーやで。';
+                resultText.textContent = '通信エラーです。';
             } finally {
                 resultText.style.display = 'block';
                 loadingElement.style.display = 'none';
