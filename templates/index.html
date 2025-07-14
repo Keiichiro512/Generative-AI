@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>文章のトーン変更ツール</title>
+    <title>キーワード抽出ツール</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
-            font-family: 'M PLUS Rounded 1c', sans-serif;
+            font-family: 'Noto Sans JP', 'Roboto', sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #ecfdf5; /* 優しいミントグリーン */
-            color: #064e3b; /* 濃い緑 */
+            background-color: #1f2937; /* ダークグレー */
+            color: #f3f4f6; /* 明るいグレー */
             display: flex;
             justify-content: center;
         }
@@ -21,74 +21,76 @@
             text-align: center;
         }
         h1 {
-            font-weight: 800;
-            color: #10b981; /* エメラルドグリーン */
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            color: #60a5fa; /* 明るい青 */
         }
         .textarea-container {
             margin-bottom: 20px;
         }
         textarea, #result-area {
             width: 95%;
-            height: 160px;
+            height: 180px;
             padding: 15px;
             font-size: 1em;
             font-family: inherit;
             border-radius: 8px;
-            border: 1px solid #a7f3d0;
+            border: 1px solid #4b5563;
+            background-color: #374151;
+            color: #f3f4f6;
             resize: vertical;
         }
         #result-area {
-            background-color: #fff;
             text-align: left;
             white-space: pre-wrap;
-            min-height: 160px;
+            min-height: 120px;
             height: auto;
         }
         label {
             display: block;
             text-align: left;
-            font-weight: 800;
+            font-weight: 700;
             margin-bottom: 8px;
-            color: #059669;
+            color: #9ca3af;
         }
         button {
             padding: 14px 40px;
             font-size: 1.1em;
-            font-weight: 800;
+            font-weight: 700;
             font-family: inherit;
             color: #fff;
-            background: linear-gradient(45deg, #34d399, #10b981);
+            background-color: #3b82f6;
             border: none;
-            border-radius: 50px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+            background-color: #2563eb;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
         }
         #loading {
             display: none;
-            color: #10b981;
+            color: #9ca3af;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>文章のトーン変更ツール</h1>
+        <h1>キーワード抽出ツール</h1>
         
         <div class="textarea-container">
             <label for="original-text">元の文章</label>
-            <textarea id="original-text" placeholder="ここにトーンを変更したい文章を入力してください..."></textarea>
+            <textarea id="original-text" placeholder="ここに、キーワードを抽出したい文章を貼り付けてください..."></textarea>
         </div>
         
-        <button id="convert-btn">フレンドリーなトーンに変換する</button>
+        <button id="convert-btn">キーワードを抽出する</button>
         
         <div class="textarea-container" style="margin-top: 20px;">
-            <label>変換結果</label>
+            <label>抽出結果</label>
             <div id="result-area">
-                <p id="result-text" style="color: #a1a1aa;">ここに、もっと伝わる文章が表示されます</p>
-                <p id="loading">トーンを調整中...</p>
+                <p id="result-text" style="color: #6b7280;">ここに重要なキーワードが5つ表示されます</p>
+                <p id="loading">文章を分析中...</p>
             </div>
         </div>
     </div>
@@ -99,7 +101,7 @@
             const originalText = originalTextarea.value;
 
             if (!originalText.trim()) {
-                alert('変換したい文章を入力してください！');
+                alert('文章を入力してください！');
                 return;
             }
 
@@ -123,7 +125,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：変換に失敗しました。';
+                    resultText.textContent = 'エラー：キーワードの抽出に失敗しました。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';

@@ -19,7 +19,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def change_tone():
+def extract_keywords():
     try:
         data = request.get_json()
         if not data or 'original_text' not in data:
@@ -29,15 +29,14 @@ def change_tone():
 
         # AIへの指示（プロンプト）
         prompt = f"""
-あなたは、優れたコミュニケーターであり、文章のトーン＆マナーを調整する専門家です。
-今から入力される文章の核心的な意味を変えずに、もっと親しみやすく、フレンドリーなトーンに書き換えてください。
+あなたは、自然言語処理（NLP）を専門とする、データサイエンティストです。
+今から入力される文章の内容を正確に分析し、その文章の主題や核心を表す最も重要なキーワードを5つ抽出してください。
 
 【元の文章】
 {original_text}
 
-変換する際は、絵文字を適切に使ったり、少しだけ砕けた表現を用いたりして、相手にポジティブな印象を与えるように工夫してください。
-ただし、ビジネスシーンでも使える範囲の、丁寧さは失わないようにしてください。
-変換後の文章のみを出力してください。
+抽出するキーワードは、単なる頻出単語ではなく、文章全体の文脈を理解した上で、そのテーマを象徴する単語やフレーズを選んでください。
+結果は箇条書きで、重要度が高い順に並べてください。
 """
         
         response = model.generate_content(prompt)
@@ -47,7 +46,7 @@ def change_tone():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"トーン変更中にエラー: {e}")
+        print(f"キーワード抽出中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
