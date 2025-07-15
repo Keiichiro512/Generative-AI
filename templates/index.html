@@ -3,27 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>キーワード抽出ツール</title>
+    <title>英語翻訳ツール</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&family=Noto+Sans+JP:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
-            font-family: 'Noto Sans JP', 'Roboto', sans-serif;
+            font-family: 'Noto Sans JP', sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #1f2937; /* ダークグレー */
-            color: #f3f4f6; /* 明るいグレー */
+            background-color: #f8f9fa;
+            color: #212529;
             display: flex;
             justify-content: center;
         }
         #app-container {
             width: 100%;
-            max-width: 700px;
+            max-width: 800px;
             text-align: center;
         }
         h1 {
-            font-family: 'Roboto', sans-serif;
             font-weight: 700;
-            color: #60a5fa; /* 明るい青 */
+            color: #0d6efd;
         }
         .textarea-container {
             margin-bottom: 20px;
@@ -35,15 +34,14 @@
             font-size: 1em;
             font-family: inherit;
             border-radius: 8px;
-            border: 1px solid #4b5563;
-            background-color: #374151;
-            color: #f3f4f6;
+            border: 1px solid #dcdfe6;
             resize: vertical;
         }
         #result-area {
+            background-color: #fff;
             text-align: left;
             white-space: pre-wrap;
-            min-height: 120px;
+            min-height: 180px;
             height: auto;
         }
         label {
@@ -51,7 +49,7 @@
             text-align: left;
             font-weight: 700;
             margin-bottom: 8px;
-            color: #9ca3af;
+            color: #495057;
         }
         button {
             padding: 14px 40px;
@@ -59,49 +57,49 @@
             font-weight: 700;
             font-family: inherit;
             color: #fff;
-            background-color: #3b82f6;
+            background-color: #0d6efd;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         button:hover {
-            background-color: #2563eb;
-            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+            background-color: #0b5ed7;
+            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.2);
         }
         #loading {
             display: none;
-            color: #9ca3af;
+            color: #6c757d;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>キーワード抽出ツール</h1>
+        <h1>英語翻訳ツール</h1>
         
         <div class="textarea-container">
-            <label for="original-text">元の文章</label>
-            <textarea id="original-text" placeholder="ここに、キーワードを抽出したい文章を貼り付けてください..."></textarea>
+            <label for="japanese-text">日本語の文章</label>
+            <textarea id="japanese-text" placeholder="ここに翻訳したい日本語を入力してください..."></textarea>
         </div>
         
-        <button id="convert-btn">キーワードを抽出する</button>
+        <button id="convert-btn">英語に翻訳する</button>
         
         <div class="textarea-container" style="margin-top: 20px;">
-            <label>抽出結果</label>
+            <label>翻訳結果（英語）</label>
             <div id="result-area">
-                <p id="result-text" style="color: #6b7280;">ここに重要なキーワードが5つ表示されます</p>
-                <p id="loading">文章を分析中...</p>
+                <p id="result-text" style="color: #909399;">ここに翻訳された英語が表示されます</p>
+                <p id="loading">翻訳中...</p>
             </div>
         </div>
     </div>
 
     <script>
         document.getElementById('convert-btn').addEventListener('click', async () => {
-            const originalTextarea = document.getElementById('original-text');
-            const originalText = originalTextarea.value;
+            const japaneseTextarea = document.getElementById('japanese-text');
+            const japaneseText = japaneseTextarea.value;
 
-            if (!originalText.trim()) {
-                alert('文章を入力してください！');
+            if (!japaneseText.trim()) {
+                alert('翻訳したい日本語を入力してください！');
                 return;
             }
 
@@ -117,7 +115,7 @@
                 const response = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ original_text: originalText })
+                    body: JSON.stringify({ japanese_text: japaneseText })
                 });
 
                 const data = await response.json();
@@ -125,7 +123,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：キーワードの抽出に失敗しました。';
+                    resultText.textContent = 'エラー：翻訳に失敗しました。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';

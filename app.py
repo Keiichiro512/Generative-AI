@@ -19,24 +19,24 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def extract_keywords():
+def translate_to_english():
     try:
         data = request.get_json()
-        if not data or 'original_text' not in data:
-            return jsonify({'error': '元の文章が指定されていません。'}), 400
+        if not data or 'japanese_text' not in data:
+            return jsonify({'error': '日本語の文章が指定されていません。'}), 400
 
-        original_text = data['original_text']
+        japanese_text = data['japanese_text']
 
         # AIへの指示（プロンプト）
         prompt = f"""
-あなたは、自然言語処理（NLP）を専門とする、データサイエンティストです。
-今から入力される文章の内容を正確に分析し、その文章の主題や核心を表す最も重要なキーワードを5つ抽出してください。
+あなたは、日本語と英語の両方に堪能な、プロの翻訳家です。
+今から入力される日本語の文章を、ネイティブスピーカーが話すような、自然で流暢な英語に翻訳してください。
 
-【元の文章】
-{original_text}
+【日本語の文章】
+{japanese_text}
 
-抽出するキーワードは、単なる頻出単語ではなく、文章全体の文脈を理解した上で、そのテーマを象徴する単語やフレーズを選んでください。
-結果は箇条書きで、重要度が高い順に並べてください。
+翻訳する際は、単語を直訳するのではなく、元の文章の意図、文脈、ニュアンスを正確に捉え、最も適切な英語表現を選んでください。
+翻訳後の英語のみを出力してください。
 """
         
         response = model.generate_content(prompt)
@@ -46,7 +46,7 @@ def extract_keywords():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"キーワード抽出中にエラー: {e}")
+        print(f"翻訳中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
