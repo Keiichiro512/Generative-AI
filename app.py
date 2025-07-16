@@ -19,34 +19,38 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def translate_to_english():
+def check_round_trip_translation():
     try:
         data = request.get_json()
-        if not data or 'japanese_text' not in data:
-            return jsonify({'error': '日本語の文章が指定されていません。'}), 400
+        if not data or 'original_japanese' not in data:
+            return jsonify({'error': '元の日本語が指定されていません。'}), 400
 
-        japanese_text = data['japanese_text']
+        original_japanese = data['original_japanese']
 
-        # AIへの指示（プロンプト）
-        prompt = f"""
-あなたは、日本語と英語の両方に堪能な、プロの翻訳家です。
-今から入力される日本語の文章を、ネイティブスピーカーが話すような、自然で流暢な英語に翻訳してください。
-
-【日本語の文章】
-{japanese_text}
-
-翻訳する際は、単語を直訳するのではなく、元の文章の意図、文脈、ニュアンスを正確に捉え、最も適切な英語表現を選んでください。
+        # --- ステップ1: 日本語から英語への翻訳 ---
+        prompt_to_english = f"""
+あなたはプロの翻訳家です。以下の日本語の文章を、自然で流暢な英語に翻訳してください。
 翻訳後の英語のみを出力してください。
+【日本語の文章】
+{original_japanese}
 """
-        
-        response = model.generate_content(prompt)
-        
-        formatted_response = response.text.strip()
+        english_response = model.generate_content(prompt_to_english)
+        english_text = english_response.text.strip()
 
-        return jsonify({'result': formatted_response})
+        # --- ステップ2: 英語から日本語への逆翻訳 ---
+        prompt_to_japanese = f"""
+あなたはプロの翻訳家です。以下の英語の文章を、自然で流暢な日本語に翻訳してください。
+翻訳後の日本語のみを出力してください。
+【英語の文章】
+{english_text}
+"""
+        final_japanese_response = model.generate_content(prompt_to_japanese)
+        final_japanese_text = final_japanese_response.text.strip()
+
+        return jsonify({'result': final_japanese_text})
 
     except Exception as e:
-        print(f"翻訳中にエラー: {e}")
+        print(f"逆翻訳中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
