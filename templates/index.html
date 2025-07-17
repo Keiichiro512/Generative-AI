@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>逆翻訳チェッカー</title>
+    <title>結論ファースト変換ツール</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
@@ -75,31 +75,31 @@
 </head>
 <body>
     <div id="app-container">
-        <h1>逆翻訳チェッカー</h1>
+        <h1>結論ファースト変換ツール</h1>
         
         <div class="textarea-container">
-            <label for="original-japanese">元の日本語</label>
-            <textarea id="original-japanese" placeholder="ここに、意味の伝わりやすさをチェックしたい日本語を入力してください..."></textarea>
+            <label for="original-text">元の文章</label>
+            <textarea id="original-text" placeholder="ここに、結論ファーストに書き換えたい文章を入力してください..."></textarea>
         </div>
         
-        <button id="convert-btn">逆翻訳してチェックする</button>
+        <button id="convert-btn">結論ファーストに変換する</button>
         
         <div class="textarea-container" style="margin-top: 20px;">
-            <label>逆翻訳された日本語</label>
+            <label>変換結果</label>
             <div id="result-area">
-                <p id="result-text" style="color: #909399;">ここに逆翻訳された日本語が表示されます</p>
-                <p id="loading">翻訳中 (1/2)...</p>
+                <p id="result-text" style="color: #909399;">ここに、分かりやすく再構成された文章が表示されます</p>
+                <p id="loading">文章を再構成中...</p>
             </div>
         </div>
     </div>
 
     <script>
         document.getElementById('convert-btn').addEventListener('click', async () => {
-            const japaneseTextarea = document.getElementById('original-japanese');
-            const originalJapanese = japaneseTextarea.value;
+            const originalTextarea = document.getElementById('original-text');
+            const originalText = originalTextarea.value;
 
-            if (!originalJapanese.trim()) {
-                alert('チェックしたい日本語を入力してください！');
+            if (!originalText.trim()) {
+                alert('変換したい文章を入力してください！');
                 return;
             }
 
@@ -115,7 +115,7 @@
                 const response = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ original_japanese: originalJapanese })
+                    body: JSON.stringify({ original_text: originalText })
                 });
 
                 const data = await response.json();
@@ -123,7 +123,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：逆翻訳に失敗しました。';
+                    resultText.textContent = 'エラー：変換に失敗しました。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';

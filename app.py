@@ -19,38 +19,37 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def check_round_trip_translation():
+def reorder_to_conclusion_first():
     try:
         data = request.get_json()
-        if not data or 'original_japanese' not in data:
-            return jsonify({'error': '元の日本語が指定されていません。'}), 400
+        if not data or 'original_text' not in data:
+            return jsonify({'error': '元の文章が指定されていません。'}), 400
 
-        original_japanese = data['original_japanese']
+        original_text = data['original_text']
 
-        # --- ステップ1: 日本語から英語への翻訳 ---
-        prompt_to_english = f"""
-あなたはプロの翻訳家です。以下の日本語の文章を、自然で流暢な英語に翻訳してください。
-翻訳後の英語のみを出力してください。
-【日本語の文章】
-{original_japanese}
+        # AIへの指示（プロンプト）
+        prompt = f"""
+あなたは、ロジカルシンキングと文章構成のプロフェッショナルです。
+今から入力される文章を分析し、「結論ファースト」の構成に書き換えてください。
+
+【元の文章】
+{original_text}
+
+書き換える際は、以下の点を遵守してください。
+1.  まず、文章全体の「結論」や「最も言いたいこと」を最初に提示します。
+2.  次に、その結論に至った「理由」や「背景」を述べます。
+3.  最後に、必要であれば「具体例」や「詳細情報」を補足します。
+4.  元の文章に含まれる重要な情報は、すべて含めるようにしてください。
 """
-        english_response = model.generate_content(prompt_to_english)
-        english_text = english_response.text.strip()
+        
+        response = model.generate_content(prompt)
+        
+        formatted_response = response.text.strip()
 
-        # --- ステップ2: 英語から日本語への逆翻訳 ---
-        prompt_to_japanese = f"""
-あなたはプロの翻訳家です。以下の英語の文章を、自然で流暢な日本語に翻訳してください。
-翻訳後の日本語のみを出力してください。
-【英語の文章】
-{english_text}
-"""
-        final_japanese_response = model.generate_content(prompt_to_japanese)
-        final_japanese_text = final_japanese_response.text.strip()
-
-        return jsonify({'result': final_japanese_text})
+        return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"逆翻訳中にエラー: {e}")
+        print(f"構成変更中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
