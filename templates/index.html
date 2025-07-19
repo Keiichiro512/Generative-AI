@@ -3,95 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>難しい言葉をカンタンに</title>
+    <title>感情分析ツール</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
-            font-family: 'M PLUS Rounded 1c', sans-serif;
+            font-family: 'Noto Sans JP', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #212529;
+            display: flex;
+            justify-content: center;
+        }
+        #app-container {
+            width: 100%;
+            max-width: 700px;
             text-align: center;
-            margin-top: 40px;
-            background-color: #e0f7fa; /* 明るい水色 */
-            color: #004d40; /* 濃いティールグリーン */
         }
         h1 {
-            font-weight: 800;
-            color: #00796b; /* ティールグリーン */
+            font-weight: 700;
+            color: #343a40;
         }
-        #container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
+        .textarea-container {
+            margin-bottom: 20px;
         }
-        #term-input {
-            width: 80%;
-            padding: 14px;
+        textarea, #result-area {
+            width: 95%;
+            height: 160px;
+            padding: 15px;
             font-size: 1em;
             font-family: inherit;
-            border-radius: 25px;
-            border: 2px solid #4db6ac;
-            margin-bottom: 20px;
-            text-align: center;
+            border-radius: 8px;
+            border: 1px solid #dcdfe6;
+            resize: vertical;
+        }
+        #result-area {
+            background-color: #fff;
+            text-align: left;
+            white-space: pre-wrap;
+            min-height: 120px;
+            height: auto;
+        }
+        label {
+            display: block;
+            text-align: left;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #495057;
         }
         button {
-            padding: 14px 35px;
+            padding: 14px 40px;
             font-size: 1.1em;
-            font-weight: 800;
+            font-weight: 700;
             font-family: inherit;
             color: #fff;
-            background: linear-gradient(45deg, #26a69a, #00897b);
+            background-color: #0d6efd;
             border: none;
-            border-radius: 25px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 137, 123, 0.3);
         }
         button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 137, 123, 0.4);
-        }
-        #result-container {
-            margin-top: 30px;
-            padding: 30px;
-            background-color: #ffffff;
-            border-radius: 15px;
-            min-height: 180px;
-            line-height: 2.0;
-            text-align: left;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            white-space: pre-wrap;
+            background-color: #0b5ed7;
+            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.2);
         }
         #loading {
             display: none;
-            color: #00796b;
+            color: #6c757d;
         }
     </style>
 </head>
 <body>
-    <div id="container">
-        <h1>難しい言葉をカンタンに</h1>
-        <input type="text" id="term-input" placeholder="難しい言葉を入力 (例: 人工知能)">
-        <br>
-        <button id="generate-btn">カンタンに説明してもらう</button>
+    <div id="app-container">
+        <h1>感情分析ツール</h1>
         
-        <div id="result-container">
-            <p id="result-text" style="text-align: center; color: #757575;">ここに、世界一わかりやすい説明が表示されます</p>
-            <p id="loading">天才の先生が考えています...</p>
+        <div class="textarea-container">
+            <label for="text-to-analyze">分析したい文章</label>
+            <textarea id="text-to-analyze" placeholder="ここに感情を分析したい文章を入力してください..."></textarea>
+        </div>
+        
+        <button id="analyze-btn">感情を分析する</button>
+        
+        <div class="textarea-container" style="margin-top: 20px;">
+            <label>分析結果</label>
+            <div id="result-area">
+                <p id="result-text" style="color: #909399;">ここに分析結果が表示されます</p>
+                <p id="loading">文章の感情を読み取っています...</p>
+            </div>
         </div>
     </div>
 
     <script>
-        document.getElementById('generate-btn').addEventListener('click', async () => {
-            const termInput = document.getElementById('term-input');
-            const term = termInput.value;
+        document.getElementById('analyze-btn').addEventListener('click', async () => {
+            const textarea = document.getElementById('text-to-analyze');
+            const textToAnalyze = textarea.value;
 
-            if (!term.trim()) {
-                alert('説明してほしい言葉を入力してください！');
+            if (!textToAnalyze.trim()) {
+                alert('分析したい文章を入力してください！');
                 return;
             }
 
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
-            const button = document.getElementById('generate-btn');
+            const button = document.getElementById('analyze-btn');
 
             resultText.style.display = 'none';
             loadingElement.style.display = 'block';
@@ -101,7 +115,7 @@
                 const response = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ term: term })
+                    body: JSON.stringify({ text_to_analyze: textToAnalyze })
                 });
 
                 const data = await response.json();
@@ -109,7 +123,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：うまく説明できませんでした。';
+                    resultText.textContent = 'エラー：分析に失敗しました。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
