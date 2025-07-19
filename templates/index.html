@@ -3,109 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>結論ファースト変換ツール</title>
+    <title>難しい言葉をカンタンに</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;800&display=swap');
         body {
-            font-family: 'Noto Sans JP', sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f8f9fa;
-            color: #212529;
-            display: flex;
-            justify-content: center;
-        }
-        #app-container {
-            width: 100%;
-            max-width: 800px;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
             text-align: center;
+            margin-top: 40px;
+            background-color: #e0f7fa; /* 明るい水色 */
+            color: #004d40; /* 濃いティールグリーン */
         }
         h1 {
-            font-weight: 700;
-            color: #0d6efd;
+            font-weight: 800;
+            color: #00796b; /* ティールグリーン */
         }
-        .textarea-container {
-            margin-bottom: 20px;
+        #container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
         }
-        textarea, #result-area {
-            width: 95%;
-            height: 180px;
-            padding: 15px;
+        #term-input {
+            width: 80%;
+            padding: 14px;
             font-size: 1em;
             font-family: inherit;
-            border-radius: 8px;
-            border: 1px solid #dcdfe6;
-            resize: vertical;
-        }
-        #result-area {
-            background-color: #fff;
-            text-align: left;
-            white-space: pre-wrap;
-            min-height: 180px;
-            height: auto;
-        }
-        label {
-            display: block;
-            text-align: left;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #495057;
+            border-radius: 25px;
+            border: 2px solid #4db6ac;
+            margin-bottom: 20px;
+            text-align: center;
         }
         button {
-            padding: 14px 40px;
+            padding: 14px 35px;
             font-size: 1.1em;
-            font-weight: 700;
+            font-weight: 800;
             font-family: inherit;
             color: #fff;
-            background-color: #0d6efd;
+            background: linear-gradient(45deg, #26a69a, #00897b);
             border: none;
-            border-radius: 8px;
+            border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 137, 123, 0.3);
         }
         button:hover {
-            background-color: #0b5ed7;
-            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 137, 123, 0.4);
+        }
+        #result-container {
+            margin-top: 30px;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            min-height: 180px;
+            line-height: 2.0;
+            text-align: left;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            white-space: pre-wrap;
         }
         #loading {
             display: none;
-            color: #6c757d;
+            color: #00796b;
         }
     </style>
 </head>
 <body>
-    <div id="app-container">
-        <h1>結論ファースト変換ツール</h1>
+    <div id="container">
+        <h1>難しい言葉をカンタンに</h1>
+        <input type="text" id="term-input" placeholder="難しい言葉を入力 (例: 人工知能)">
+        <br>
+        <button id="generate-btn">カンタンに説明してもらう</button>
         
-        <div class="textarea-container">
-            <label for="original-text">元の文章</label>
-            <textarea id="original-text" placeholder="ここに、結論ファーストに書き換えたい文章を入力してください..."></textarea>
-        </div>
-        
-        <button id="convert-btn">結論ファーストに変換する</button>
-        
-        <div class="textarea-container" style="margin-top: 20px;">
-            <label>変換結果</label>
-            <div id="result-area">
-                <p id="result-text" style="color: #909399;">ここに、分かりやすく再構成された文章が表示されます</p>
-                <p id="loading">文章を再構成中...</p>
-            </div>
+        <div id="result-container">
+            <p id="result-text" style="text-align: center; color: #757575;">ここに、世界一わかりやすい説明が表示されます</p>
+            <p id="loading">天才の先生が考えています...</p>
         </div>
     </div>
 
     <script>
-        document.getElementById('convert-btn').addEventListener('click', async () => {
-            const originalTextarea = document.getElementById('original-text');
-            const originalText = originalTextarea.value;
+        document.getElementById('generate-btn').addEventListener('click', async () => {
+            const termInput = document.getElementById('term-input');
+            const term = termInput.value;
 
-            if (!originalText.trim()) {
-                alert('変換したい文章を入力してください！');
+            if (!term.trim()) {
+                alert('説明してほしい言葉を入力してください！');
                 return;
             }
 
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
-            const button = document.getElementById('convert-btn');
+            const button = document.getElementById('generate-btn');
 
             resultText.style.display = 'none';
             loadingElement.style.display = 'block';
@@ -115,7 +101,7 @@
                 const response = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ original_text: originalText })
+                    body: JSON.stringify({ term: term })
                 });
 
                 const data = await response.json();
@@ -123,7 +109,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：変換に失敗しました。';
+                    resultText.textContent = 'エラー：うまく説明できませんでした。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';

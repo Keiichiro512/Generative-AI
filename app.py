@@ -19,27 +19,26 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def reorder_to_conclusion_first():
+def explain_simply():
     try:
         data = request.get_json()
-        if not data or 'original_text' not in data:
-            return jsonify({'error': '元の文章が指定されていません。'}), 400
+        if not data or 'term' not in data:
+            return jsonify({'error': '言葉が指定されていません。'}), 400
 
-        original_text = data['original_text']
+        term = data['term']
 
         # AIへの指示（プロンプト）
         prompt = f"""
-あなたは、ロジカルシンキングと文章構成のプロフェッショナルです。
-今から入力される文章を分析し、「結論ファースト」の構成に書き換えてください。
+あなたは、どんなに難しいことでも、小学生に分かるように説明するのが大得意な、天才的な先生です。
+今から入力される専門用語や難しい言葉を、身近なものに例えながら、非常に分かりやすく説明してください。
 
-【元の文章】
-{original_text}
+【難しい言葉】
+{term}
 
-書き換える際は、以下の点を遵守してください。
-1.  まず、文章全体の「結論」や「最も言いたいこと」を最初に提示します。
-2.  次に、その結論に至った「理由」や「背景」を述べます。
-3.  最後に、必要であれば「具体例」や「詳細情報」を補足します。
-4.  元の文章に含まれる重要な情報は、すべて含めるようにしてください。
+説明する際は、以下の点を守ってください。
+1.  専門用語は使わない。
+2.  子供が興味を持つような、面白い例え話を使う。
+3.  まず一言で「〇〇みたいなものだよ」と結論を言ってから、詳しい説明を始める。
 """
         
         response = model.generate_content(prompt)
@@ -49,7 +48,7 @@ def reorder_to_conclusion_first():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"構成変更中にエラー: {e}")
+        print(f"説明生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
