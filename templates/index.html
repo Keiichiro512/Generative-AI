@@ -3,69 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>感情分析ツール</title>
+    <title>英単語レベル判定ツール</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
             font-family: 'Noto Sans JP', sans-serif;
-            margin: 0;
-            padding: 20px;
+            text-align: center;
+            margin-top: 50px;
             background-color: #f8f9fa;
             color: #212529;
-            display: flex;
-            justify-content: center;
-        }
-        #app-container {
-            width: 100%;
-            max-width: 700px;
-            text-align: center;
         }
         h1 {
             font-weight: 700;
-            color: #343a40;
+            color: #007bff;
         }
-        .textarea-container {
-            margin-bottom: 20px;
+        #container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
         }
-        textarea, #result-area {
-            width: 95%;
-            height: 160px;
-            padding: 15px;
-            font-size: 1em;
-            font-family: inherit;
+        #word-input {
+            width: 80%;
+            padding: 14px;
+            font-size: 1.1em;
             border-radius: 8px;
-            border: 1px solid #dcdfe6;
-            resize: vertical;
-        }
-        #result-area {
-            background-color: #fff;
-            text-align: left;
-            white-space: pre-wrap;
-            min-height: 120px;
-            height: auto;
-        }
-        label {
-            display: block;
-            text-align: left;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #495057;
+            border: 1px solid #ced4da;
+            margin-bottom: 20px;
+            text-align: center;
         }
         button {
-            padding: 14px 40px;
+            padding: 14px 35px;
             font-size: 1.1em;
             font-weight: 700;
-            font-family: inherit;
             color: #fff;
-            background-color: #0d6efd;
+            background-color: #007bff;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         button:hover {
-            background-color: #0b5ed7;
-            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.2);
+            background-color: #0056b3;
+        }
+        #result-container {
+            margin-top: 30px;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            min-height: 120px;
+            line-height: 2.0;
+            text-align: left;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            white-space: pre-wrap;
         }
         #loading {
             display: none;
@@ -74,38 +63,31 @@
     </style>
 </head>
 <body>
-    <div id="app-container">
-        <h1>感情分析ツール</h1>
+    <div id="container">
+        <h1>英単語レベル判定ツール</h1>
+        <input type="text" id="word-input" placeholder="判定したい英単語を入力 (例: phenomenon)">
+        <br>
+        <button id="judge-btn">レベルを判定する</button>
         
-        <div class="textarea-container">
-            <label for="text-to-analyze">分析したい文章</label>
-            <textarea id="text-to-analyze" placeholder="ここに感情を分析したい文章を入力してください..."></textarea>
-        </div>
-        
-        <button id="analyze-btn">感情を分析する</button>
-        
-        <div class="textarea-container" style="margin-top: 20px;">
-            <label>分析結果</label>
-            <div id="result-area">
-                <p id="result-text" style="color: #909399;">ここに分析結果が表示されます</p>
-                <p id="loading">文章の感情を読み取っています...</p>
-            </div>
+        <div id="result-container">
+            <p id="result-text" style="text-align: center; color: #6c757d;">ここに判定結果が表示されます</p>
+            <p id="loading">判定中...</p>
         </div>
     </div>
 
     <script>
-        document.getElementById('analyze-btn').addEventListener('click', async () => {
-            const textarea = document.getElementById('text-to-analyze');
-            const textToAnalyze = textarea.value;
+        document.getElementById('judge-btn').addEventListener('click', async () => {
+            const wordInput = document.getElementById('word-input');
+            const word = wordInput.value;
 
-            if (!textToAnalyze.trim()) {
-                alert('分析したい文章を入力してください！');
+            if (!word.trim()) {
+                alert('判定したい英単語を入力してください！');
                 return;
             }
 
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
-            const button = document.getElementById('analyze-btn');
+            const button = document.getElementById('judge-btn');
 
             resultText.style.display = 'none';
             loadingElement.style.display = 'block';
@@ -115,7 +97,7 @@
                 const response = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text_to_analyze: textToAnalyze })
+                    body: JSON.stringify({ word: word })
                 });
 
                 const data = await response.json();
@@ -123,7 +105,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：分析に失敗しました。';
+                    resultText.textContent = 'エラー：判定に失敗しました。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
