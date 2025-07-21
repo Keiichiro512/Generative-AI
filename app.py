@@ -19,28 +19,24 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def rate_word_difficulty():
+def make_poetic():
     try:
         data = request.get_json()
-        if not data or 'word' not in data:
-            return jsonify({'error': '単語が指定されていません。'}), 400
+        if not data or 'original_text' not in data:
+            return jsonify({'error': '元の文章が指定されていません。'}), 400
 
-        word = data['word']
+        original_text = data['original_text']
 
         # AIへの指示（プロンプト）
         prompt = f"""
-あなたは、英語教育の専門家であり、英単語の難易度を正確に評価することができます。
-今から入力される英単語について、一般的な英語学習者にとっての難易度を「簡単」「普通」「難しい」の3段階で判定してください。
+あなたは、言葉を紡ぐ詩人です。
+今から入力される、ありふれた日常の出来事を、読んだ人の心が動かされるような、美しく詩的な表現に書き換えてください。
 
-【判定対象の英単語】
-{word}
+【元の文章】
+{original_text}
 
-判定結果に加えて、なぜそのように判断したのか、簡単な「判定の根拠」も示してください。
-（例：中学校で習う基本的な単語のため、日常会話でよく使われるため、専門的な文脈で使われることが多いため、など）
-
-【出力フォーマット】
-判定結果：(簡単/普通/難しい)
-判定の根拠：(なぜそのように判断したかを簡潔に説明)
+書き換える際は、比喩（メタファー）、情景描写、五感を刺激する言葉などを効果的に用いて、元の出来事の奥にある感情や雰囲気を引き出してください。
+変換後の文章のみを出力してください。
 """
         
         response = model.generate_content(prompt)
@@ -50,7 +46,7 @@ def rate_word_difficulty():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"難易度判定中にエラー: {e}")
+        print(f"詩的表現への変換中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
