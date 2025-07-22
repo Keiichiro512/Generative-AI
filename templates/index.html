@@ -3,109 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>詩的表現変換ツール</title>
+    <title>プレスリリース作成支援ツール</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
-            font-family: 'Shippori Mincho', serif;
-            text-align: center;
+            font-family: 'Noto Sans JP', sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f5f5f5; /* ニュートラルな背景 */
-            color: #333;
+            background-color: #f8f9fa;
+            color: #212529;
             display: flex;
             justify-content: center;
         }
         #app-container {
             width: 100%;
-            max-width: 700px;
+            max-width: 800px;
+            text-align: center;
         }
         h1 {
-            font-weight: normal;
-            color: #5a4628;
-            letter-spacing: 0.1em;
+            font-weight: 700;
+            color: #343a40;
         }
         .textarea-container {
             margin-bottom: 20px;
         }
         textarea, #result-area {
             width: 95%;
-            height: 160px;
+            height: 200px;
             padding: 15px;
             font-size: 1em;
             font-family: inherit;
-            border-radius: 4px;
-            border: 1px solid #ddd;
+            border-radius: 8px;
+            border: 1px solid #dcdfe6;
             resize: vertical;
         }
         #result-area {
             background-color: #fff;
             text-align: left;
             white-space: pre-wrap;
-            min-height: 160px;
+            min-height: 200px;
             height: auto;
-            line-height: 2.2;
-            font-size: 1.1em;
         }
         label {
             display: block;
             text-align: left;
+            font-weight: 700;
             margin-bottom: 8px;
-            color: #8c7851;
+            color: #495057;
         }
         button {
-            padding: 12px 35px;
+            padding: 14px 40px;
             font-size: 1.1em;
+            font-weight: 700;
             font-family: inherit;
             color: #fff;
-            background-color: #8c7851;
+            background-color: #007bff;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         button:hover {
-            background-color: #5a4628;
+            background-color: #0056b3;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
         }
         #loading {
             display: none;
-            color: #8c7851;
+            color: #6c757d;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>詩的表現変換ツール</h1>
+        <h1>プレスリリース作成支援ツール</h1>
         
         <div class="textarea-container">
-            <label for="original-text">日常の出来事</label>
-            <textarea id="original-text" placeholder="ここに、ありふれた日常の出来事を入力してください... (例: コンビニでコーヒーを買った。)"></textarea>
+            <label for="announcement-details">発表内容の要点</label>
+            <textarea id="announcement-details" placeholder="発表したい内容の要点を箇条書きで入力してください。
+例：
+・新商品『AIアシスタント手帳』発売
+・発売日：8月1日
+・特徴：スケジュール管理をAIが自動最適化
+・価格：5,980円"></textarea>
         </div>
         
-        <button id="convert-btn">詩的に変換する</button>
+        <button id="create-btn">プレスリリースの骨子を作成</button>
         
         <div class="textarea-container" style="margin-top: 20px;">
-            <label>詩的な表現</label>
+            <label>生成された骨子</label>
             <div id="result-area">
-                <p id="result-text" style="color: #999; text-align:center;">ここに、美しい言葉が紡がれます</p>
-                <p id="loading">言葉を紡いでいます...</p>
+                <p id="result-text" style="color: #909399;">ここにプレスリリースの骨子（構成案）が生成されます</p>
+                <p id="loading">構成を考えています...</p>
             </div>
         </div>
     </div>
 
     <script>
-        document.getElementById('convert-btn').addEventListener('click', async () => {
-            const originalTextarea = document.getElementById('original-text');
-            const originalText = originalTextarea.value;
+        document.getElementById('create-btn').addEventListener('click', async () => {
+            const detailsTextarea = document.getElementById('announcement-details');
+            const announcementDetails = detailsTextarea.value;
 
-            if (!originalText.trim()) {
-                alert('文章を入力してください！');
+            if (!announcementDetails.trim()) {
+                alert('発表内容の要点を入力してください！');
                 return;
             }
 
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
-            const button = document.getElementById('convert-btn');
+            const button = document.getElementById('create-btn');
 
             resultText.style.display = 'none';
             loadingElement.style.display = 'block';
@@ -115,7 +120,7 @@
                 const response = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ original_text: originalText })
+                    body: JSON.stringify({ announcement_details: announcementDetails })
                 });
 
                 const data = await response.json();
@@ -123,7 +128,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：美しい言葉が思いつきませんでした。';
+                    resultText.textContent = 'エラー：骨子の作成に失敗しました。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
