@@ -3,59 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>プレスリリース作成支援ツール</title>
+    <title>カタカナ語を日本語に変換</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
             font-family: 'Noto Sans JP', sans-serif;
-            margin: 0;
-            padding: 20px;
+            text-align: center;
+            margin-top: 50px;
             background-color: #f8f9fa;
             color: #212529;
-            display: flex;
-            justify-content: center;
-        }
-        #app-container {
-            width: 100%;
-            max-width: 800px;
-            text-align: center;
         }
         h1 {
             font-weight: 700;
-            color: #343a40;
+            color: #007bff;
         }
-        .textarea-container {
-            margin-bottom: 20px;
+        #container {
+            max-width: 550px;
+            margin: 0 auto;
+            padding: 20px;
         }
-        textarea, #result-area {
-            width: 95%;
-            height: 200px;
-            padding: 15px;
-            font-size: 1em;
-            font-family: inherit;
+        #katakana-input {
+            width: 80%;
+            padding: 14px;
+            font-size: 1.1em;
             border-radius: 8px;
-            border: 1px solid #dcdfe6;
-            resize: vertical;
-        }
-        #result-area {
-            background-color: #fff;
-            text-align: left;
-            white-space: pre-wrap;
-            min-height: 200px;
-            height: auto;
-        }
-        label {
-            display: block;
-            text-align: left;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #495057;
+            border: 1px solid #ced4da;
+            margin-bottom: 20px;
+            text-align: center;
         }
         button {
-            padding: 14px 40px;
+            padding: 14px 35px;
             font-size: 1.1em;
             font-weight: 700;
-            font-family: inherit;
             color: #fff;
             background-color: #007bff;
             border: none;
@@ -65,7 +44,17 @@
         }
         button:hover {
             background-color: #0056b3;
-            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+        }
+        #result-container {
+            margin-top: 30px;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            min-height: 150px;
+            line-height: 2.0;
+            text-align: left;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            white-space: pre-wrap;
         }
         #loading {
             display: none;
@@ -74,43 +63,31 @@
     </style>
 </head>
 <body>
-    <div id="app-container">
-        <h1>プレスリリース作成支援ツール</h1>
+    <div id="container">
+        <h1>カタカナ語を日本語に変換</h1>
+        <input type="text" id="katakana-input" placeholder="カタカナ語を入力 (例: アジェンダ)">
+        <br>
+        <button id="convert-btn">日本語に変換する</button>
         
-        <div class="textarea-container">
-            <label for="announcement-details">発表内容の要点</label>
-            <textarea id="announcement-details" placeholder="発表したい内容の要点を箇条書きで入力してください。
-例：
-・新商品『AIアシスタント手帳』発売
-・発売日：8月1日
-・特徴：スケジュール管理をAIが自動最適化
-・価格：5,980円"></textarea>
-        </div>
-        
-        <button id="create-btn">プレスリリースの骨子を作成</button>
-        
-        <div class="textarea-container" style="margin-top: 20px;">
-            <label>生成された骨子</label>
-            <div id="result-area">
-                <p id="result-text" style="color: #909399;">ここにプレスリリースの骨子（構成案）が生成されます</p>
-                <p id="loading">構成を考えています...</p>
-            </div>
+        <div id="result-container">
+            <p id="result-text" style="text-align: center; color: #6c757d;">ここに分かりやすい日本語訳が表示されます</p>
+            <p id="loading">翻訳中...</p>
         </div>
     </div>
 
     <script>
-        document.getElementById('create-btn').addEventListener('click', async () => {
-            const detailsTextarea = document.getElementById('announcement-details');
-            const announcementDetails = detailsTextarea.value;
+        document.getElementById('convert-btn').addEventListener('click', async () => {
+            const katakanaInput = document.getElementById('katakana-input');
+            const katakanaWord = katakanaInput.value;
 
-            if (!announcementDetails.trim()) {
-                alert('発表内容の要点を入力してください！');
+            if (!katakanaWord.trim()) {
+                alert('カタカナ語を入力してください！');
                 return;
             }
 
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
-            const button = document.getElementById('create-btn');
+            const button = document.getElementById('convert-btn');
 
             resultText.style.display = 'none';
             loadingElement.style.display = 'block';
@@ -120,7 +97,7 @@
                 const response = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ announcement_details: announcementDetails })
+                    body: JSON.stringify({ katakana_word: katakanaWord })
                 });
 
                 const data = await response.json();
@@ -128,7 +105,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：骨子の作成に失敗しました。';
+                    resultText.textContent = 'エラー：変換に失敗しました。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';

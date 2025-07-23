@@ -19,34 +19,27 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def create_pr_outline():
+def explain_katakana_word():
     try:
         data = request.get_json()
-        if not data or 'announcement_details' not in data:
-            return jsonify({'error': '発表内容が指定されていません。'}), 400
+        if not data or 'katakana_word' not in data:
+            return jsonify({'error': 'カタカナ語が指定されていません。'}), 400
 
-        announcement_details = data['announcement_details']
+        katakana_word = data['katakana_word']
 
         # AIへの指示（プロンプト）
         prompt = f"""
-あなたは、数々の企業の広報・PRを成功させてきた、ベテランのPRコンサルタントです。
-クライアントから伝えられた以下の「発表内容」を元に、メディア関係者がすぐに内容を理解できるような、論理的で分かりやすいプレスリリースの骨子（構成案）を作成してください。
+あなたは、外来語やビジネス用語に詳しい、言語の専門家です。
+今から入力されるカタカナ語を、誰にでも分かりやすい、シンプルな日本語に変換または説明してください。
 
-【発表内容】
-{announcement_details}
+【カタカナ語】
+{katakana_word}
 
-作成する骨子は、一般的なプレスリリースの構成（タイトル、リード文、本文、会社概要など）に沿ってください。
-各項目で、どのような内容を記述すべきかを簡潔に示してください。
+変換する際は、最も一般的で使われやすい日本語の代替案を提示し、必要であれば簡単な使用例も添えてください。
 
 【出力フォーマット】
-件名（タイトル案）：
-リード文（発表内容の要約）：
-本文：
-　1. 背景・経緯：(なぜこの発表に至ったのか)
-　2. 製品・サービスの詳細：(スペック、特徴、価格など)
-　3. 今後の展望：(将来的に何を目指すのか)
-会社概要：
-問い合わせ先：
+日本語での意味：(ここに日本語の訳や説明)
+使用例：「(簡単な使用例)」
 """
         
         response = model.generate_content(prompt)
@@ -56,7 +49,7 @@ def create_pr_outline():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"プレスリリース骨子作成中にエラー: {e}")
+        print(f"カタカナ語の変換中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
