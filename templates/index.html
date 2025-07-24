@@ -3,58 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>カタカナ語を日本語に変換</title>
+    <title>レビュー返信文メーカー</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
             font-family: 'Noto Sans JP', sans-serif;
-            text-align: center;
-            margin-top: 50px;
+            margin: 0;
+            padding: 20px;
             background-color: #f8f9fa;
             color: #212529;
+            display: flex;
+            justify-content: center;
+        }
+        #app-container {
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
         }
         h1 {
             font-weight: 700;
-            color: #007bff;
+            color: #343a40;
         }
-        #container {
-            max-width: 550px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        #katakana-input {
-            width: 80%;
-            padding: 14px;
-            font-size: 1.1em;
-            border-radius: 8px;
-            border: 1px solid #ced4da;
+        .input-group {
             margin-bottom: 20px;
-            text-align: center;
+            text-align: left;
+        }
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+        select, textarea, #result-area {
+            width: 100%;
+            padding: 12px;
+            font-size: 1em;
+            font-family: inherit;
+            border-radius: 8px;
+            border: 1px solid #dcdfe6;
+            box-sizing: border-box; /* paddingを含めた幅計算に */
+        }
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+        #result-area {
+            background-color: #fff;
+            white-space: pre-wrap;
+            min-height: 180px;
+            height: auto;
         }
         button {
-            padding: 14px 35px;
+            padding: 14px 40px;
             font-size: 1.1em;
             font-weight: 700;
+            font-family: inherit;
             color: #fff;
-            background-color: #007bff;
+            background-color: #28a745; /* 信頼感のある緑 */
             border: none;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         button:hover {
-            background-color: #0056b3;
-        }
-        #result-container {
-            margin-top: 30px;
-            padding: 30px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            min-height: 150px;
-            line-height: 2.0;
-            text-align: left;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            white-space: pre-wrap;
+            background-color: #218838;
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2);
         }
         #loading {
             display: none;
@@ -63,31 +76,52 @@
     </style>
 </head>
 <body>
-    <div id="container">
-        <h1>カタカナ語を日本語に変換</h1>
-        <input type="text" id="katakana-input" placeholder="カタカナ語を入力 (例: アジェンダ)">
-        <br>
-        <button id="convert-btn">日本語に変換する</button>
+    <div id="app-container">
+        <h1>レビュー返信文メーカー</h1>
         
-        <div id="result-container">
-            <p id="result-text" style="text-align: center; color: #6c757d;">ここに分かりやすい日本語訳が表示されます</p>
-            <p id="loading">翻訳中...</p>
+        <div class="input-group">
+            <label for="rating-select">星評価</label>
+            <select id="rating-select">
+                <option value="5">★★★★★ (5)</option>
+                <option value="4">★★★★☆ (4)</option>
+                <option value="3">★★★☆☆ (3)</option>
+                <option value="2">★★☆☆☆ (2)</option>
+                <option value="1">★☆☆☆☆ (1)</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="comment-input">レビューコメント</label>
+            <textarea id="comment-input" placeholder="お客様からのレビューコメントをここに貼り付けてください..."></textarea>
+        </div>
+        
+        <button id="create-btn">返信文を作成する</button>
+        
+        <div class="input-group" style="margin-top: 20px;">
+            <label>生成された返信文</label>
+            <div id="result-area">
+                <p id="result-text" style="color: #909399;">ここに、お客様への丁寧な返信文が生成されます</p>
+                <p id="loading">最高の返信文を作成中...</p>
+            </div>
         </div>
     </div>
 
     <script>
-        document.getElementById('convert-btn').addEventListener('click', async () => {
-            const katakanaInput = document.getElementById('katakana-input');
-            const katakanaWord = katakanaInput.value;
+        document.getElementById('create-btn').addEventListener('click', async () => {
+            const ratingSelect = document.getElementById('rating-select');
+            const commentTextarea = document.getElementById('comment-input');
+            
+            const rating = ratingSelect.value;
+            const comment = commentTextarea.value;
 
-            if (!katakanaWord.trim()) {
-                alert('カタカナ語を入力してください！');
+            if (!comment.trim()) {
+                alert('レビューコメントを入力してください！');
                 return;
             }
 
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
-            const button = document.getElementById('convert-btn');
+            const button = document.getElementById('create-btn');
 
             resultText.style.display = 'none';
             loadingElement.style.display = 'block';
@@ -97,7 +131,7 @@
                 const response = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ katakana_word: katakanaWord })
+                    body: JSON.stringify({ rating: rating, comment: comment })
                 });
 
                 const data = await response.json();
@@ -105,7 +139,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：変換に失敗しました。';
+                    resultText.textContent = 'エラー：返信文の作成に失敗しました。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
