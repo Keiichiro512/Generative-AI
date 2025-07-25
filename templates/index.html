@@ -3,125 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>レビュー返信文メーカー</title>
+    <title>アプリアイデアジェネレーター</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
-            font-family: 'Noto Sans JP', sans-serif;
+            font-family: 'Noto Sans JP', 'Roboto', sans-serif;
+            text-align: center;
             margin: 0;
             padding: 20px;
-            background-color: #f8f9fa;
-            color: #212529;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* クリエイティブなグラデーション */
+            color: #ffffff;
             display: flex;
             justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
         #app-container {
             width: 100%;
-            max-width: 700px;
-            text-align: center;
+            max-width: 650px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
         h1 {
+            font-family: 'Roboto', sans-serif;
             font-weight: 700;
-            color: #343a40;
         }
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        label {
-            display: block;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #495057;
-        }
-        select, textarea, #result-area {
-            width: 100%;
-            padding: 12px;
+        #target-input {
+            width: 80%;
+            padding: 14px;
             font-size: 1em;
             font-family: inherit;
-            border-radius: 8px;
-            border: 1px solid #dcdfe6;
-            box-sizing: border-box; /* paddingを含めた幅計算に */
+            border-radius: 50px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            margin-bottom: 20px;
+            text-align: center;
         }
-        textarea {
-            height: 120px;
-            resize: vertical;
-        }
-        #result-area {
-            background-color: #fff;
-            white-space: pre-wrap;
-            min-height: 180px;
-            height: auto;
+        #target-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
         }
         button {
             padding: 14px 40px;
             font-size: 1.1em;
             font-weight: 700;
             font-family: inherit;
-            color: #fff;
-            background-color: #28a745; /* 信頼感のある緑 */
+            color: #667eea;
+            background-color: #fff;
             border: none;
-            border-radius: 8px;
+            border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         button:hover {
-            background-color: #218838;
-            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2);
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        #result-area {
+            margin-top: 30px;
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            min-height: 200px;
+            line-height: 2.0;
+            text-align: left;
+            white-space: pre-wrap;
         }
         #loading {
             display: none;
-            color: #6c757d;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>レビュー返信文メーカー</h1>
+        <h1>アプリアイデアジェネレーター</h1>
+        <input type="text" id="target-input" placeholder="ターゲット層を入力 (例: 大学生)">
+        <br>
+        <button id="generate-btn">アプリのアイデアを生成する</button>
         
-        <div class="input-group">
-            <label for="rating-select">星評価</label>
-            <select id="rating-select">
-                <option value="5">★★★★★ (5)</option>
-                <option value="4">★★★★☆ (4)</option>
-                <option value="3">★★★☆☆ (3)</option>
-                <option value="2">★★☆☆☆ (2)</option>
-                <option value="1">★☆☆☆☆ (1)</option>
-            </select>
-        </div>
-
-        <div class="input-group">
-            <label for="comment-input">レビューコメント</label>
-            <textarea id="comment-input" placeholder="お客様からのレビューコメントをここに貼り付けてください..."></textarea>
-        </div>
-        
-        <button id="create-btn">返信文を作成する</button>
-        
-        <div class="input-group" style="margin-top: 20px;">
-            <label>生成された返信文</label>
-            <div id="result-area">
-                <p id="result-text" style="color: #909399;">ここに、お客様への丁寧な返信文が生成されます</p>
-                <p id="loading">最高の返信文を作成中...</p>
-            </div>
+        <div id="result-area">
+            <p id="result-text" style="text-align: center; color: rgba(255, 255, 255, 0.7);">ここに、未来のヒットアプリのアイデアが生まれます</p>
+            <p id="loading">アイデアを閃き中...</p>
         </div>
     </div>
 
     <script>
-        document.getElementById('create-btn').addEventListener('click', async () => {
-            const ratingSelect = document.getElementById('rating-select');
-            const commentTextarea = document.getElementById('comment-input');
-            
-            const rating = ratingSelect.value;
-            const comment = commentTextarea.value;
+        document.getElementById('generate-btn').addEventListener('click', async () => {
+            const targetInput = document.getElementById('target-input');
+            const targetAudience = targetInput.value;
 
-            if (!comment.trim()) {
-                alert('レビューコメントを入力してください！');
+            if (!targetAudience.trim()) {
+                alert('ターゲット層を入力してください！');
                 return;
             }
 
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
-            const button = document.getElementById('create-btn');
+            const button = document.getElementById('generate-btn');
 
             resultText.style.display = 'none';
             loadingElement.style.display = 'block';
@@ -131,7 +115,7 @@
                 const response = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ rating: rating, comment: comment })
+                    body: JSON.stringify({ target_audience: targetAudience })
                 });
 
                 const data = await response.json();
@@ -139,7 +123,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：返信文の作成に失敗しました。';
+                    resultText.textContent = 'エラー：良いアイデアが思いつきませんでした。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
