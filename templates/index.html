@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>キャラクター設定メーカー</title>
+    <title>架空の国設定メーカー</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho&display=swap');
         body {
-            font-family: 'M PLUS Rounded 1c', sans-serif;
+            font-family: 'Shippori Mincho', serif;
             text-align: center;
             margin: 0;
             padding: 20px;
-            background-color: #f3f4f6; /* 明るいグレー */
-            color: #1f2937; /* 濃いグレー */
+            background-color: #1f2937; /* 深い夜空の色 */
+            color: #d1d5db; /* 明るい灰色 */
             display: flex;
             justify-content: center;
         }
@@ -21,73 +21,75 @@
             max-width: 700px;
         }
         h1 {
-            font-weight: 800;
-            color: #4f46e5; /* 紫がかった青 */
+            font-weight: normal;
+            color: #fde68a; /* 金色 */
+            letter-spacing: 0.1em;
+            text-shadow: 0 0 5px #fde68a;
         }
-        #features-input {
+        #concept-input {
             width: 80%;
             padding: 14px;
             font-size: 1em;
             font-family: inherit;
-            border-radius: 50px;
-            border: 2px solid #a5b4fc;
+            border-radius: 4px;
+            border: 1px solid #4b5563;
+            background-color: #374151;
+            color: #d1d5db;
             margin-bottom: 20px;
             text-align: center;
         }
         button {
-            padding: 14px 40px;
+            padding: 12px 35px;
             font-size: 1.1em;
-            font-weight: 800;
             font-family: inherit;
-            color: #fff;
-            background: linear-gradient(45deg, #6366f1, #4f46e5);
+            color: #1f2937;
+            background-color: #fde68a;
             border: none;
-            border-radius: 50px;
+            border-radius: 4px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
         }
         button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+            background-color: #facc15;
+            box-shadow: 0 0 15px #fde68a;
         }
         #result-area {
             margin-top: 30px;
             padding: 30px;
-            background-color: #fff;
-            border-radius: 15px;
+            background-color: #374151;
+            border-radius: 4px;
             min-height: 250px;
-            line-height: 2.0;
+            line-height: 2.2;
             text-align: left;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             white-space: pre-wrap;
         }
         #loading {
             display: none;
-            color: #4f46e5;
+            color: #fde68a;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>キャラクター設定メーカー</h1>
-        <input type="text" id="features-input" placeholder="キャラクターの特徴を入力 (例: 記憶喪失の魔法使い)">
+        <h1>架空の国設定メーカー</h1>
+        <input type="text" id="concept-input" placeholder="国のコンセプトを入力 (例: 魔法と科学が共存する国)">
         <br>
-        <button id="generate-btn">キャラクター設定を生成する</button>
+        <button id="generate-btn">国の設定を生成する</button>
         
         <div id="result-area">
-            <p id="result-text" style="text-align: center; color: #9ca3af;">ここに、新たなキャラクターが誕生します</p>
-            <p id="loading">キャラクターを創造中...</p>
+            <p id="result-text" style="text-align: center; color: #9ca3af;">ここに、新たな世界が創造されます</p>
+            <p id="loading">世界を創造中...</p>
         </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
-            const featuresInput = document.getElementById('features-input');
-            const features = featuresInput.value;
+            const conceptInput = document.getElementById('concept-input');
+            const concept = conceptInput.value;
 
-            if (!features.trim()) {
-                alert('キャラクターの特徴を入力してください！');
+            if (!concept.trim()) {
+                alert('国のコンセプトを入力してください！');
                 return;
             }
 
@@ -103,7 +105,7 @@
                 const response = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ features: features })
+                    body: JSON.stringify({ concept: concept })
                 });
 
                 const data = await response.json();
@@ -111,7 +113,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：魅力的なキャラクターが思いつきませんでした。';
+                    resultText.textContent = 'エラー：良い世界が思いつきませんでした。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
