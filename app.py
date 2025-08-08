@@ -19,31 +19,24 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def generate_event_plan():
+def generate_research_theme():
     try:
-        data = request.get_json()
-        if not data or 'event_theme' not in data:
-            return jsonify({'error': 'イベントのテーマが指定されていません。'}), 400
-
-        event_theme = data['event_theme']
-
         # AIへの指示（プロンプト）
-        prompt = f"""
-あなたは、数々のイベントを成功させてきた、創造力豊かなイベントプランナーです。
-今から指定する「イベントのテーマ」に沿って、参加者が楽しめる、ユニークで具体的な企画案を1つ作成してください。
+        prompt = """
+あなたは、子供たちの好奇心を引き出すのが得意な、小学校の理科の先生です。
+小学生が夏休みの自由研究で楽しめる、ユニークで面白いテーマのアイデアを1つ提案してください。
 
-【イベントのテーマ】
-{event_theme}
-
-企画案は、幹事がそのまま使えるように、以下の要素を含んだ形式でお願いします。
+提案する際は、ただのテーマ名だけでなく、以下の要素を含めて、子供がすぐに取り組みたくなるような形でお願いします。
 
 【出力フォーマット】
-イベント名案：(キャッチーなイベント名)
-コンセプト：(イベントの目的や目指す雰囲気)
-開催時期の目安：(テーマに合った季節や時期)
-主なコンテンツ案：
-　・(イベントの中心となる催し物を箇条書きで2〜3個)
-参加を促す一言：(参加したくなるような、キャッチーな誘い文句)
+研究テーマ：(キャッチーなテーマ名)
+ジャンル：(例：科学実験、観察、工作、調査)
+必要なもの：(家にあるものや、100円ショップで手軽に揃えられるもの)
+簡単な進め方：
+　1. (手順1)
+　2. (手順2)
+　3. (手順3)
+この研究の面白いポイント：(子供の興味を引くようなポイント)
 """
         
         response = model.generate_content(prompt)
@@ -53,7 +46,7 @@ def generate_event_plan():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"イベント企画案生成中にエラー: {e}")
+        print(f"自由研究テーマ生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

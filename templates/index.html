@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>イベント企画案ジェネレーター</title>
+    <title>自由研究テーマジェネレーター</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;800&display=swap');
         body {
@@ -11,8 +11,8 @@
             text-align: center;
             margin: 0;
             padding: 20px;
-            background-color: #f0fdfa; /* 明るいミント色 */
-            color: #0f766e; /* 濃いティール */
+            background-color: #f0f9ff; /* 夏の青空のような色 */
+            color: #0c4a6e; /* 深い青 */
             display: flex;
             justify-content: center;
         }
@@ -22,39 +22,30 @@
         }
         h1 {
             font-weight: 800;
-            color: #14b8a6; /* ティール */
-        }
-        #theme-input {
-            width: 80%;
-            padding: 14px;
-            font-size: 1em;
-            font-family: inherit;
-            border-radius: 50px;
-            border: 2px solid #5eead4;
-            margin-bottom: 20px;
-            text-align: center;
+            color: #0ea5e9; /* 空色 */
+            font-size: 2.5em;
         }
         button {
-            padding: 14px 40px;
-            font-size: 1.1em;
+            padding: 16px 45px;
+            font-size: 1.2em;
             font-weight: 800;
             font-family: inherit;
             color: #fff;
-            background: linear-gradient(45deg, #2dd4bf, #14b8a6);
+            background: linear-gradient(45deg, #f97316, #fb923c); /* 夏の太陽のようなオレンジ */
             border: none;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(20, 184, 166, 0.3);
+            box-shadow: 0 5px 20px rgba(249, 115, 22, 0.3);
         }
         button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(20, 184, 166, 0.4);
+            box-shadow: 0 8px 30px rgba(249, 115, 22, 0.4);
         }
-        #result-area {
-            margin-top: 30px;
+        #result-container {
+            margin-top: 40px;
             padding: 30px;
-            background-color: #fff;
+            background-color: #ffffff;
             border-radius: 15px;
             min-height: 250px;
             line-height: 2.0;
@@ -64,33 +55,23 @@
         }
         #loading {
             display: none;
-            color: #14b8a6;
+            color: #f97316;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>イベント企画案ジェネレーター</h1>
-        <input type="text" id="theme-input" placeholder="イベントのテーマを入力 (例: 夏に開催する社内イベント)">
-        <br>
-        <button id="generate-btn">企画案を生成する</button>
+        <h1>自由研究テーマ<br>ジェネレーター</h1>
+        <button id="generate-btn">面白いテーマを提案してもらう</button>
         
-        <div id="result-area">
-            <p id="result-text" style="text-align: center; color: #9ca3af;">ここに、最高のイベント企画案が生成されます</p>
-            <p id="loading">企画を練っています...</p>
+        <div id="result-container">
+            <p id="result-text" style="text-align: center; color: #9ca3af;">ボタンを押して、ワクワクする研究テーマを見つけよう！</p>
+            <p id="loading">考え中...ヒラめき待ち！</p>
         </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
-            const themeInput = document.getElementById('theme-input');
-            const eventTheme = themeInput.value;
-
-            if (!eventTheme.trim()) {
-                alert('イベントのテーマを入力してください！');
-                return;
-            }
-
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
             const button = document.getElementById('generate-btn');
@@ -100,18 +81,13 @@
             button.disabled = true;
 
             try {
-                const response = await fetch('/generate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ event_theme: eventTheme })
-                });
-
+                const response = await fetch('/generate', { method: 'POST' });
                 const data = await response.json();
 
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：良い企画が思いつきませんでした。';
+                    resultText.textContent = 'エラー：良いテーマが思いつきませんでした。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
