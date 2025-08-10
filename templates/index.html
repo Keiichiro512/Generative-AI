@@ -3,96 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>作詞支援ツール</title>
+    <title>料理レシピ発想ツール</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
-            font-family: 'Noto Serif JP', serif;
+            font-family: 'Noto Sans JP', sans-serif;
             text-align: center;
             margin: 0;
             padding: 20px;
-            background-color: #1a202c; /* 深い夜の色 */
-            color: #cbd5e1; /* 明るいグレー */
+            background-color: #fdfaf6; /* 温かみのある背景色 */
+            color: #444;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            box-sizing: border-box;
         }
         #app-container {
             width: 100%;
-            max-width: 650px;
+            max-width: 700px;
         }
         h1 {
             font-weight: 700;
-            color: #93c5fd; /* 淡い青 */
-            letter-spacing: 0.1em;
+            color: #e85d04; /* テラコッタオレンジ */
         }
-        #theme-input {
+        #ingredients-input {
             width: 80%;
             padding: 14px;
             font-size: 1em;
             font-family: inherit;
-            border-radius: 4px;
-            border: 1px solid #475569;
-            background-color: #334155;
-            color: #f1f5f9;
+            border-radius: 8px;
+            border: 1px solid #fca311;
             margin-bottom: 20px;
             text-align: center;
         }
         button {
-            padding: 12px 35px;
+            padding: 14px 35px;
             font-size: 1.1em;
-            font-family: inherit;
+            font-weight: 700;
             color: #fff;
-            background-color: #3b82f6;
+            background-color: #e85d04;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         button:hover {
-            background-color: #2563eb;
-            box-shadow: 0 0 15px #3b82f6;
+            background-color: #dc2f02;
+            box-shadow: 0 4px 15px rgba(232, 93, 4, 0.3);
         }
         #result-area {
             margin-top: 30px;
             padding: 30px;
-            background-color: #334155;
-            border-radius: 4px;
-            min-height: 200px;
-            line-height: 2.5;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            background-color: #fff;
+            border-radius: 8px;
+            min-height: 300px;
+            line-height: 2.0;
+            text-align: left;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             white-space: pre-wrap;
-            font-size: 1.2em;
         }
         #loading {
             display: none;
-            color: #93c5fd;
+            color: #e85d04;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>作詞支援ツール</h1>
-        <input type="text" id="theme-input" placeholder="歌詞のテーマを入力 (例: 夏の終わり)">
+        <h1>料理レシピ発想ツール</h1>
+        <input type="text" id="ingredients-input" placeholder="食材を2つ以上入力 (例: 鶏肉、りんご)">
         <br>
-        <button id="generate-btn">サビの歌詞を生成する</button>
+        <button id="generate-btn">珍しいレシピを考えてもらう</button>
         
         <div id="result-area">
-            <p id="result-text" style="font-size: 1rem; color: #94a3b8;">ここに、心に響く歌詞が生まれます</p>
-            <p id="loading">作詞中...</p>
+            <p id="result-text" style="text-align: center; color: #aaa;">ここに、意外な組み合わせの美味しいレシピが提案されます</p>
+            <p id="loading">レシピを考案中...</p>
         </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
-            const themeInput = document.getElementById('theme-input');
-            const theme = themeInput.value;
+            const ingredientsInput = document.getElementById('ingredients-input');
+            const ingredients = ingredientsInput.value;
 
-            if (!theme.trim()) {
-                alert('歌詞のテーマを入力してください！');
+            if (!ingredients.trim()) {
+                alert('食材を入力してください！');
                 return;
             }
 
@@ -108,7 +101,7 @@
                 const response = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ theme: theme })
+                    body: JSON.stringify({ ingredients: ingredients })
                 });
 
                 const data = await response.json();
@@ -116,7 +109,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：良い歌詞が思いつきませんでした。';
+                    resultText.textContent = 'エラー：美味しいレシピが思いつきませんでした。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';

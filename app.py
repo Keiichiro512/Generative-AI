@@ -19,24 +19,36 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def generate_lyrics_chorus():
+def generate_recipe():
     try:
         data = request.get_json()
-        if not data or 'theme' not in data:
-            return jsonify({'error': 'テーマが指定されていません。'}), 400
+        if not data or 'ingredients' not in data:
+            return jsonify({'error': '食材が指定されていません。'}), 400
 
-        theme = data['theme']
+        ingredients = data['ingredients']
 
         # AIへの指示（プロンプト）
         prompt = f"""
-あなたは、数々のヒット曲を生み出してきた、プロの作詞家です。
-今から指定する「テーマ」に沿って、聴く人の心に響く、J-POPの歌のサビ（一番盛り上がる部分）の歌詞を作成してください。
+あなたは、世界中の料理に精通し、意外な食材の組み合わせで人々を驚かせるのが得意な、創造力豊かな料理人です。
+今から指定する「主な食材」を使って、家庭でも作れる、少し珍しくて美味しい料理のレシピを1つ考案してください。
 
-【テーマ】
-{theme}
+【主な食材】
+{ingredients}
 
-作成する歌詞は、情景が目に浮かぶような具体的な言葉を使い、共感を呼ぶような感情表現を盛り込んでください。
-4行から8行程度の、覚えやすい構成でお願いします。
+レシピは、以下のフォーマットで、誰でも作れるように分かりやすく記述してください。
+
+【出力フォーマット】
+料理名：(独創的で美味しそうな料理名)
+
+材料（2人分）：
+　・(材料リスト)
+
+作り方：
+　1. (手順1)
+　2. (手順2)
+　3. (手順3)
+
+この料理のポイント：(美味しさの秘訣や、珍しい組み合わせの理由など)
 """
         
         response = model.generate_content(prompt)
@@ -46,7 +58,7 @@ def generate_lyrics_chorus():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"作詞中にエラー: {e}")
+        print(f"レシピ生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
