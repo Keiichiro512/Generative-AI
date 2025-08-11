@@ -19,36 +19,36 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def generate_recipe():
+def generate_domain_names():
     try:
         data = request.get_json()
-        if not data or 'ingredients' not in data:
-            return jsonify({'error': '食材が指定されていません。'}), 400
+        if not data or 'service_name' not in data:
+            return jsonify({'error': 'サービス名が指定されていません。'}), 400
 
-        ingredients = data['ingredients']
+        service_name = data['service_name']
 
         # AIへの指示（プロンプト）
         prompt = f"""
-あなたは、世界中の料理に精通し、意外な食材の組み合わせで人々を驚かせるのが得意な、創造力豊かな料理人です。
-今から指定する「主な食材」を使って、家庭でも作れる、少し珍しくて美味しい料理のレシピを1つ考案してください。
+あなたは、スタートアップのブランディングとドメイン名の選定を専門とする、経験豊富なマーケターです。
+今から指定する「サービス名」のコンセプトに合った、覚えやすく、タイプしやすく、利用可能（空いている）可能性が高いドメイン名を5つ提案してください。
 
-【主な食材】
-{ingredients}
+【サービス名】
+{service_name}
 
-レシピは、以下のフォーマットで、誰でも作れるように分かりやすく記述してください。
+提案するドメイン名は、.com / .jp / .net / .io / .app などの人気のトップレベルドメインを使い、クリエイティブな単語の組み合わせや、短縮形なども含めてください。
+それぞれのドメイン名に、なぜそれが良いかの簡単な「選定理由」も添えてください。
 
 【出力フォーマット】
-料理名：(独創的で美味しそうな料理名)
-
-材料（2人分）：
-　・(材料リスト)
-
-作り方：
-　1. (手順1)
-　2. (手順2)
-　3. (手順3)
-
-この料理のポイント：(美味しさの秘訣や、珍しい組み合わせの理由など)
+1. (ドメイン名1)
+   理由：(なぜこのドメイン名が良いかの簡単な説明)
+2. (ドメイン名2)
+   理由：(なぜこのドメイン名が良いかの簡単な説明)
+3. (ドメイン名3)
+   理由：(なぜこのドメイン名が良いかの簡単な説明)
+4. (ドメイン名4)
+   理由：(なぜこのドメイン名が良いかの簡単な説明)
+5. (ドメイン名5)
+   理由：(なぜこのドメイン名が良いかの簡単な説明)
 """
         
         response = model.generate_content(prompt)
@@ -58,7 +58,7 @@ def generate_recipe():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"レシピ生成中にエラー: {e}")
+        print(f"ドメイン名生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

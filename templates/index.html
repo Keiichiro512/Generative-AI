@@ -3,89 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>料理レシピ発想ツール</title>
+    <title>ドメイン名ジェネレーター</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
-            font-family: 'Noto Sans JP', sans-serif;
+            font-family: 'Noto Sans JP', 'Roboto', sans-serif;
             text-align: center;
             margin: 0;
             padding: 20px;
-            background-color: #fdfaf6; /* 温かみのある背景色 */
-            color: #444;
+            background-color: #111827; /* とても濃い紺色 */
+            color: #f9fafb; /* 明るい白 */
             display: flex;
             justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
         #app-container {
             width: 100%;
-            max-width: 700px;
+            max-width: 650px;
         }
         h1 {
+            font-family: 'Roboto', sans-serif;
             font-weight: 700;
-            color: #e85d04; /* テラコッタオレンジ */
+            color: #818cf8; /* 明るい紫 */
         }
-        #ingredients-input {
+        #service-name-input {
             width: 80%;
             padding: 14px;
             font-size: 1em;
             font-family: inherit;
-            border-radius: 8px;
-            border: 1px solid #fca311;
+            border-radius: 50px;
+            border: 1px solid #4b5563;
+            background-color: #1f2937;
+            color: #f9fafb;
             margin-bottom: 20px;
             text-align: center;
         }
         button {
-            padding: 14px 35px;
+            padding: 14px 40px;
             font-size: 1.1em;
             font-weight: 700;
+            font-family: inherit;
             color: #fff;
-            background-color: #e85d04;
+            background: linear-gradient(45deg, #818cf8, #6366f1);
             border: none;
-            border-radius: 8px;
+            border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         button:hover {
-            background-color: #dc2f02;
-            box-shadow: 0 4px 15px rgba(232, 93, 4, 0.3);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(129, 140, 248, 0.4);
         }
         #result-area {
             margin-top: 30px;
             padding: 30px;
-            background-color: #fff;
-            border-radius: 8px;
-            min-height: 300px;
-            line-height: 2.0;
+            background-color: #1f2937;
+            border-radius: 15px;
+            min-height: 250px;
+            line-height: 2.2;
             text-align: left;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             white-space: pre-wrap;
         }
         #loading {
             display: none;
-            color: #e85d04;
+            color: #818cf8;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>料理レシピ発想ツール</h1>
-        <input type="text" id="ingredients-input" placeholder="食材を2つ以上入力 (例: 鶏肉、りんご)">
+        <h1>ドメイン名ジェネレーター</h1>
+        <input type="text" id="service-name-input" placeholder="サービス名やコンセプトを入力 (例: おうちごはん)">
         <br>
-        <button id="generate-btn">珍しいレシピを考えてもらう</button>
+        <button id="generate-btn">ドメイン名を生成する</button>
         
         <div id="result-area">
-            <p id="result-text" style="text-align: center; color: #aaa;">ここに、意外な組み合わせの美味しいレシピが提案されます</p>
-            <p id="loading">レシピを考案中...</p>
+            <p id="result-text" style="text-align: center; color: #6b7280;">ここに、ユニークなドメイン名が5つ提案されます</p>
+            <p id="loading">最高のドメイン名を探しています...</p>
         </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
-            const ingredientsInput = document.getElementById('ingredients-input');
-            const ingredients = ingredientsInput.value;
+            const serviceNameInput = document.getElementById('service-name-input');
+            const serviceName = serviceNameInput.value;
 
-            if (!ingredients.trim()) {
-                alert('食材を入力してください！');
+            if (!serviceName.trim()) {
+                alert('サービス名やコンセプトを入力してください！');
                 return;
             }
 
@@ -101,7 +107,7 @@
                 const response = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ingredients: ingredients })
+                    body: JSON.stringify({ service_name: serviceName })
                 });
 
                 const data = await response.json();
@@ -109,7 +115,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：美味しいレシピが思いつきませんでした。';
+                    resultText.textContent = 'エラー：良いドメイン名が思いつきませんでした。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
