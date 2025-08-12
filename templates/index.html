@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ドメイン名ジェネレーター</title>
+    <title>ショート動画ネタジェネレーター</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&family=Noto+Sans+JP:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@800&family=M+PLUS+Rounded+1c:wght@400;800&display=swap');
         body {
-            font-family: 'Noto Sans JP', 'Roboto', sans-serif;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
             text-align: center;
             margin: 0;
             padding: 20px;
-            background-color: #111827; /* とても濃い紺色 */
-            color: #f9fafb; /* 明るい白 */
+            background-color: #000;
+            color: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -24,77 +24,56 @@
             max-width: 650px;
         }
         h1 {
-            font-family: 'Roboto', sans-serif;
-            font-weight: 700;
-            color: #818cf8; /* 明るい紫 */
-        }
-        #service-name-input {
-            width: 80%;
-            padding: 14px;
-            font-size: 1em;
-            font-family: inherit;
-            border-radius: 50px;
-            border: 1px solid #4b5563;
-            background-color: #1f2937;
-            color: #f9fafb;
-            margin-bottom: 20px;
-            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 0 #ff0050, -2px -2px 0 #00f2ea;
         }
         button {
-            padding: 14px 40px;
-            font-size: 1.1em;
-            font-weight: 700;
+            padding: 16px 45px;
+            font-size: 1.2em;
+            font-weight: 800;
             font-family: inherit;
-            color: #fff;
-            background: linear-gradient(45deg, #818cf8, #6366f1);
+            color: #000;
+            background: linear-gradient(45deg, #00f2ea, #ff0050);
             border: none;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(255, 0, 80, 0.4);
         }
         button:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(129, 140, 248, 0.4);
+            box-shadow: 0 8px 30px rgba(0, 242, 234, 0.4);
         }
         #result-area {
-            margin-top: 30px;
+            margin-top: 40px;
             padding: 30px;
-            background-color: #1f2937;
+            background-color: #1c1c1e;
             border-radius: 15px;
             min-height: 250px;
-            line-height: 2.2;
+            line-height: 2.0;
             text-align: left;
             white-space: pre-wrap;
         }
         #loading {
             display: none;
-            color: #818cf8;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>ドメイン名ジェネレーター</h1>
-        <input type="text" id="service-name-input" placeholder="サービス名やコンセプトを入力 (例: おうちごはん)">
-        <br>
-        <button id="generate-btn">ドメイン名を生成する</button>
+        <h1>ショート動画ネタ<br>ジェネレーター</h1>
+        <button id="generate-btn">新しいネタを生成する</button>
         
         <div id="result-area">
-            <p id="result-text" style="text-align: center; color: #6b7280;">ここに、ユニークなドメイン名が5つ提案されます</p>
-            <p id="loading">最高のドメイン名を探しています...</p>
+            <p id="result-text" style="text-align: center; color: #8e8e93;">ボタンを押して、バズる動画ネタをゲット！</p>
+            <p id="loading">トレンドを分析中...</p>
         </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
-            const serviceNameInput = document.getElementById('service-name-input');
-            const serviceName = serviceNameInput.value;
-
-            if (!serviceName.trim()) {
-                alert('サービス名やコンセプトを入力してください！');
-                return;
-            }
-
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
             const button = document.getElementById('generate-btn');
@@ -104,18 +83,13 @@
             button.disabled = true;
 
             try {
-                const response = await fetch('/generate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ service_name: serviceName })
-                });
-
+                const response = await fetch('/generate', { method: 'POST' });
                 const data = await response.json();
 
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：良いドメイン名が思いつきませんでした。';
+                    resultText.textContent = 'エラー：良いネタが思いつきませんでした。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
