@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ショート動画ネタジェネレーター</title>
+    <title>プレゼントアイデア提案ツール</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@800&family=M+PLUS+Rounded+1c:wght@400;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
-            font-family: 'M PLUS Rounded 1c', sans-serif;
+            font-family: 'Noto Sans JP', sans-serif;
             text-align: center;
             margin: 0;
             padding: 20px;
-            background-color: #000;
-            color: #fff;
+            background-color: #f8f1e7; /* 暖色系の背景色 */
+            color: #4b3d3d;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -24,56 +24,77 @@
             max-width: 650px;
         }
         h1 {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 800;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 0 #ff0050, -2px -2px 0 #00f2ea;
+            font-weight: 700;
+            color: #d17a22; /* 優しいオレンジ */
+        }
+        #recipient-input {
+            width: 80%;
+            padding: 14px;
+            font-size: 1em;
+            font-family: inherit;
+            border-radius: 50px;
+            border: 1px solid #e2c091;
+            background-color: #fff;
+            color: #4b3d3d;
+            margin-bottom: 20px;
+            text-align: center;
         }
         button {
-            padding: 16px 45px;
-            font-size: 1.2em;
-            font-weight: 800;
+            padding: 14px 40px;
+            font-size: 1.1em;
+            font-weight: 700;
             font-family: inherit;
-            color: #000;
-            background: linear-gradient(45deg, #00f2ea, #ff0050);
+            color: #fff;
+            background: linear-gradient(45deg, #d17a22, #b86b1f);
             border: none;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(255, 0, 80, 0.4);
         }
         button:hover {
             transform: scale(1.05);
-            box-shadow: 0 8px 30px rgba(0, 242, 234, 0.4);
+            box-shadow: 0 8px 20px rgba(209, 122, 34, 0.3);
         }
         #result-area {
-            margin-top: 40px;
+            margin-top: 30px;
             padding: 30px;
-            background-color: #1c1c1e;
+            background-color: #fff;
             border-radius: 15px;
             min-height: 250px;
-            line-height: 2.0;
+            line-height: 2.2;
             text-align: left;
             white-space: pre-wrap;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         #loading {
             display: none;
+            color: #d17a22;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>ショート動画ネタ<br>ジェネレーター</h1>
-        <button id="generate-btn">新しいネタを生成する</button>
+        <h1>プレゼントアイデア提案ツール</h1>
+        <input type="text" id="recipient-input" placeholder="相手の情報や趣味を入力 (例：コーヒー好きな父)">
+        <br>
+        <button id="generate-btn">プレゼントを提案してもらう</button>
         
         <div id="result-area">
-            <p id="result-text" style="text-align: center; color: #8e8e93;">ボタンを押して、バズる動画ネタをゲット！</p>
-            <p id="loading">トレンドを分析中...</p>
+            <p id="result-text" style="text-align: center; color: #a0a0a0;">ここに、気の利いたプレゼントアイデアが3つ提案されます</p>
+            <p id="loading">最高のプレゼントを選定中...</p>
         </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
+            const recipientInput = document.getElementById('recipient-input');
+            const recipientInfo = recipientInput.value;
+
+            if (!recipientInfo.trim()) {
+                alert('プレゼントを贈る相手の情報を入力してください！');
+                return;
+            }
+
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
             const button = document.getElementById('generate-btn');
@@ -83,13 +104,18 @@
             button.disabled = true;
 
             try {
-                const response = await fetch('/generate', { method: 'POST' });
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ recipient_info: recipientInfo })
+                });
+
                 const data = await response.json();
 
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：良いネタが思いつきませんでした。';
+                    resultText.textContent = 'エラー：良いプレゼントが見つかりませんでした。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
