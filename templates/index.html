@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>プレゼントアイデア提案ツール</title>
+    <title>AI旅行プランナー</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
@@ -11,8 +11,8 @@
             text-align: center;
             margin: 0;
             padding: 20px;
-            background-color: #f8f1e7; /* 暖色系の背景色 */
-            color: #4b3d3d;
+            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%); /* 爽やかな空と海のグラデーション */
+            color: #333;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -21,21 +21,26 @@
         }
         #app-container {
             width: 100%;
-            max-width: 650px;
+            max-width: 700px;
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         h1 {
             font-weight: 700;
-            color: #d17a22; /* 優しいオレンジ */
+            color: #0052d4;
         }
-        #recipient-input {
+        #trip-request-input {
             width: 80%;
             padding: 14px;
             font-size: 1em;
             font-family: inherit;
             border-radius: 50px;
-            border: 1px solid #e2c091;
+            border: 1px solid #66a6ff;
             background-color: #fff;
-            color: #4b3d3d;
             margin-bottom: 20px;
             text-align: center;
         }
@@ -45,53 +50,54 @@
             font-weight: 700;
             font-family: inherit;
             color: #fff;
-            background: linear-gradient(45deg, #d17a22, #b86b1f);
+            background: linear-gradient(45deg, #0052d4, #65c7f7, #9cecfb);
+            background-size: 200% auto;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         button:hover {
+            background-position: right center;
+            box-shadow: 0 4px 15px rgba(0, 82, 212, 0.3);
             transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(209, 122, 34, 0.3);
         }
         #result-area {
             margin-top: 30px;
             padding: 30px;
             background-color: #fff;
             border-radius: 15px;
-            min-height: 250px;
-            line-height: 2.2;
+            min-height: 300px;
+            line-height: 2.0;
             text-align: left;
             white-space: pre-wrap;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         #loading {
             display: none;
-            color: #d17a22;
+            color: #0052d4;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>プレゼントアイデア提案ツール</h1>
-        <input type="text" id="recipient-input" placeholder="相手の情報や趣味を入力 (例：コーヒー好きな父)">
+        <h1>AI旅行プランナー</h1>
+        <input type="text" id="trip-request-input" placeholder="旅行の要望を入力 (例: 週末1泊2日、温泉旅行)">
         <br>
-        <button id="generate-btn">プレゼントを提案してもらう</button>
+        <button id="generate-btn">旅行プランを生成する</button>
         
         <div id="result-area">
-            <p id="result-text" style="text-align: center; color: #a0a0a0;">ここに、気の利いたプレゼントアイデアが3つ提案されます</p>
-            <p id="loading">最高のプレゼントを選定中...</p>
+            <p id="result-text" style="text-align: center; color: #888;">ここに、最高の旅行プランが提案されます</p>
+            <p id="loading">最高のプランを計画中...</p>
         </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
-            const recipientInput = document.getElementById('recipient-input');
-            const recipientInfo = recipientInput.value;
+            const requestInput = document.getElementById('trip-request-input');
+            const tripRequest = requestInput.value;
 
-            if (!recipientInfo.trim()) {
-                alert('プレゼントを贈る相手の情報を入力してください！');
+            if (!tripRequest.trim()) {
+                alert('旅行の要望を入力してください！');
                 return;
             }
 
@@ -107,7 +113,7 @@
                 const response = await fetch('/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ recipient_info: recipientInfo })
+                    body: JSON.stringify({ trip_request: tripRequest })
                 });
 
                 const data = await response.json();
@@ -115,7 +121,7 @@
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：良いプレゼントが見つかりませんでした。';
+                    resultText.textContent = 'エラー：良いプランが思いつきませんでした。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
