@@ -19,39 +19,18 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def generate_trip_plan():
+def generate_debate_topic():
     try:
-        data = request.get_json()
-        if not data or 'trip_request' not in data:
-            return jsonify({'error': '旅行の要望が指定されていません。'}), 400
-
-        trip_request = data['trip_request']
-
         # AIへの指示（プロンプト）
-        prompt = f"""
-あなたは、日本中の観光地に詳しい、経験豊富な旅行プランナーです。
-今から指定する「旅行の要望」に沿って、読んだ人がワクワクするような、具体的で実現可能な旅行プランを1つ作成してください。
+        prompt = """
+あなたは、世界中のあらゆる対立を知り尽くした、議論の専門家です。
+誰もが一度は考えたことがあり、どちらの立場にも正義があるような、白熱した議論を呼ぶ「究極の二択」のお題を1つ生成してください。
 
-【旅行の要望】
-{trip_request}
-
-プランは、タイムスケジュールが分かるように、以下の要素を含んだ形式でお願いします。
+お題は、「きのこの山 vs たけのこの里」のように、食べ物やライフスタイルに関する、身近で面白いテーマが望ましいです。
+政治や宗教など、深刻すぎるテーマは避けてください。
 
 【出力フォーマット】
-旅行のテーマ：(プランにキャッチーな名前を付ける)
-
-【1日目】
-午前：(具体的なアクティビティや場所)
-昼食：(おすすめの食事やレストラン)
-午後：(具体的なアクティビティや場所)
-宿泊：(おすすめの宿泊施設エリアや種類)
-
-【2日目】
-午前：(具体的なアクティビティや場所)
-昼食：(おすすめの食事やレストラン)
-午後：(具体的なアクティビティや場所)
-
-プランのポイント：(この旅行プランの魅力や楽しむコツ)
+(究極の二択のお題、例：犬派 vs 猫派)
 """
         
         response = model.generate_content(prompt)
@@ -61,7 +40,7 @@ def generate_trip_plan():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"旅行プラン生成中にエラー: {e}")
+        print(f"ディベートお題生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
