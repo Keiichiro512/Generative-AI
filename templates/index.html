@@ -3,77 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ゲームアイデアジェネレーター</title>
+    <title>架空商品レビューメーカー</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+JP:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
         body {
             font-family: 'Noto Sans JP', sans-serif;
             text-align: center;
             margin: 0;
             padding: 20px;
-            background-color: #1a1a1a; /* ゲームらしいダークな背景 */
-            color: #ffffff;
+            background-color: #f8f9fa;
+            color: #212529;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            box-sizing: border-box;
         }
         #app-container {
             width: 100%;
             max-width: 700px;
         }
         h1 {
-            font-family: 'Press Start 2P', cursive; /* 8bitゲーム風フォント */
-            color: #ffcc00; /* ゴールド */
-            text-shadow: 2px 2px 0 #cc0000;
+            font-weight: 700;
+            color: #343a40;
+        }
+        #product-input {
+            width: 80%;
+            padding: 14px;
+            font-size: 1em;
+            font-family: inherit;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            margin-bottom: 20px;
+            text-align: center;
         }
         button {
-            padding: 16px 45px;
+            padding: 14px 35px;
             font-size: 1.1em;
-            font-family: 'Press Start 2P', cursive;
+            font-weight: 700;
             color: #fff;
-            background-color: #337ab7;
-            border: 2px solid #fff;
-            border-radius: 0;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 4px 4px 0px #000;
+            transition: all 0.3s ease;
         }
         button:hover {
-            background-color: #286090;
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0px #000;
+            background-color: #0056b3;
         }
         #result-area {
-            margin-top: 40px;
+            margin-top: 30px;
             padding: 30px;
-            background-color: #333;
-            border: 2px solid #fff;
+            background-color: #ffffff;
+            border-radius: 8px;
             min-height: 300px;
             line-height: 2.0;
             text-align: left;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             white-space: pre-wrap;
         }
         #loading {
             display: none;
-            color: #ffcc00;
+            color: #6c757d;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>ゲームアイデア<br>ジェネレーター</h1>
-        <button id="generate-btn">新しいゲームを閃く</button>
+        <h1>架空商品レビューメーカー</h1>
+        <input type="text" id="product-input" placeholder="架空の商品名を入力 (例: 透明マント)">
+        <br>
+        <button id="generate-btn">レビューを生成する</button>
         
         <div id="result-area">
-            <p id="result-text" style="text-align: center; color: #888;">PRESS START BUTTON</p>
-            <p id="loading">NOW LOADING...</p>
+            <p id="result-text" style="text-align: center; color: #6c757d;">ここに、リアルな商品レビューが生成されます</p>
+            <p id="loading">実際に使ってみています...</p>
         </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
+            const productInput = document.getElementById('product-input');
+            const productName = productInput.value;
+
+            if (!productName.trim()) {
+                alert('架空の商品名を入力してください！');
+                return;
+            }
+
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
             const button = document.getElementById('generate-btn');
@@ -83,13 +97,18 @@
             button.disabled = true;
 
             try {
-                const response = await fetch('/generate', { method: 'POST' });
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ product_name: productName })
+                });
+
                 const data = await response.json();
 
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：面白いゲームが思いつきませんでした。';
+                    resultText.textContent = 'エラー：良いレビューが思いつきませんでした。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
