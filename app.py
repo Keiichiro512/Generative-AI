@@ -19,32 +19,18 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def generate_product_review():
+def generate_life_lesson():
     try:
-        data = request.get_json()
-        if not data or 'product_name' not in data:
-            return jsonify({'error': '商品名が指定されていません。'}), 400
-
-        product_name = data['product_name']
-
         # AIへの指示（プロンプト）
-        prompt = f"""
-あなたは、最新ガジェットや未来の製品をレビューするのが得意な、人気ブロガーです。
-今から指定する「架空の商品」を実際に使ってみたかのように、リアルで面白いレビュー記事を作成してください。
+        prompt = """
+あなたは、数々の名作アニメに登場する、賢者や師匠のようなキャラクターです。
+若者の心に火をつけ、明日への希望を与えるような、熱くて深イイ「人生の教訓」を創作してください。
 
-【架空の商品】
-{product_name}
-
-レビューは、読者が購入を検討したくなるように、以下の要素を含んだ形式でお願いします。
+教訓は、架空のアニメのキャラクター（例：歴戦の勇者、孤高の魔法使い、熱血の師匠など）が、主人公に語りかけるようなセリフ形式でお願いします。
 
 【出力フォーマット】
-レビュータイトル：(記事のキャッチーなタイトル)
-評価：(星5段階評価で、★の数で表現)
-
-本文：
-(ここに、商品の第一印象、使ってみて良かった点、少し気になった点などを、具体的なエピソードを交えて記述)
-
-まとめ：(どんな人におすすめか)
+「(ここに教訓のセリフ)」
+- (キャラクターの肩書きや名前など)
 """
         
         response = model.generate_content(prompt)
@@ -54,7 +40,7 @@ def generate_product_review():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"レビュー生成中にエラー: {e}")
+        print(f"教訓の生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

@@ -3,91 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>架空商品レビューメーカー</title>
+    <title>人生の教訓ジェネレーター</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&display=swap');
         body {
-            font-family: 'Noto Sans JP', sans-serif;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
             text-align: center;
             margin: 0;
             padding: 20px;
-            background-color: #f8f9fa;
-            color: #212529;
+            background-color: #1a1a2e; /* 深い夜空の色 */
+            color: #e0e0e0;
             display: flex;
             justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
         #app-container {
             width: 100%;
-            max-width: 700px;
+            max-width: 650px;
         }
         h1 {
+            font-family: 'Noto Serif JP', serif;
             font-weight: 700;
-            color: #343a40;
-        }
-        #product-input {
-            width: 80%;
-            padding: 14px;
-            font-size: 1em;
-            font-family: inherit;
-            border-radius: 8px;
-            border: 1px solid #ced4da;
-            margin-bottom: 20px;
-            text-align: center;
+            color: #f7b733; /* 金色 */
+            text-shadow: 0 0 8px #f7b733;
+            font-size: 2.5em;
         }
         button {
-            padding: 14px 35px;
-            font-size: 1.1em;
-            font-weight: 700;
-            color: #fff;
-            background-color: #007bff;
+            padding: 16px 45px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #1a1a2e;
+            background: linear-gradient(45deg, #f7b733, #fc4a1a);
             border: none;
-            border-radius: 8px;
+            border-radius: 5px;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(247, 183, 51, 0.4);
         }
         button:hover {
-            background-color: #0056b3;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(252, 74, 26, 0.5);
         }
-        #result-area {
-            margin-top: 30px;
-            padding: 30px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            min-height: 300px;
-            line-height: 2.0;
-            text-align: left;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        #result-container {
+            margin-top: 40px;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            min-height: 200px;
+            line-height: 2.2;
+            text-align: center;
             white-space: pre-wrap;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4em;
+            font-family: 'Noto Serif JP', serif;
+        }
+        #result-text {
+            margin-bottom: 20px;
+        }
+        #byline {
+            font-size: 0.8em;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            color: #aaa;
         }
         #loading {
             display: none;
-            color: #6c757d;
+            color: #f7b733;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>架空商品レビューメーカー</h1>
-        <input type="text" id="product-input" placeholder="架空の商品名を入力 (例: 透明マント)">
-        <br>
-        <button id="generate-btn">レビューを生成する</button>
+        <h1>人生の教訓ジェネレーター</h1>
+        <button id="generate-btn">心に響く教訓を授かる</button>
         
-        <div id="result-area">
-            <p id="result-text" style="text-align: center; color: #6c757d;">ここに、リアルな商品レビューが生成されます</p>
-            <p id="loading">実際に使ってみています...</p>
+        <div id="result-container">
+            <p id="result-text" style="font-size: 1rem; font-weight: normal; font-family: sans-serif; color: #888;">ボタンを押して、魂を揺さぶる言葉を受け取ろう</p>
+            <p id="loading">言の葉を探しています...</p>
         </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
-            const productInput = document.getElementById('product-input');
-            const productName = productInput.value;
-
-            if (!productName.trim()) {
-                alert('架空の商品名を入力してください！');
-                return;
-            }
-
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
             const button = document.getElementById('generate-btn');
@@ -97,18 +98,13 @@
             button.disabled = true;
 
             try {
-                const response = await fetch('/generate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ product_name: productName })
-                });
-
+                const response = await fetch('/generate', { method: 'POST' });
                 const data = await response.json();
 
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：良いレビューが思いつきませんでした。';
+                    resultText.textContent = 'エラー：良い教訓が思いつきませんでした。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
