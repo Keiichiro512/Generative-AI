@@ -19,18 +19,29 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
-def generate_life_lesson():
+def generate_headlines():
     try:
-        # AIへの指示（プロンプト）
-        prompt = """
-あなたは、数々の名作アニメに登場する、賢者や師匠のようなキャラクターです。
-若者の心に火をつけ、明日への希望を与えるような、熱くて深イイ「人生の教訓」を創作してください。
+        data = request.get_json()
+        if not data or 'theme' not in data:
+            return jsonify({'error': 'テーマが指定されていません。'}), 400
 
-教訓は、架空のアニメのキャラクター（例：歴戦の勇者、孤高の魔法使い、熱血の師匠など）が、主人公に語りかけるようなセリフ形式でお願いします。
+        theme = data['theme']
+
+        # AIへの指示（プロンプト）
+        prompt = f"""
+あなたは、数々の人気メディアで記事をヒットさせてきた、敏腕編集者です。
+今から指定する「テーマ」について、読者が思わずクリックして記事を読みたくなるような、魅力的で少し煽り気味な見出しを3つ提案してください。
+
+【テーマ】
+{theme}
+
+提案する見出しは、それぞれ異なる切り口（例：問題提起型、ノウハウ型、逆張り型など）でお願いします。
+具体的な数字や、読者の好奇心を刺激するような言葉（「知らないと損」「たった3つのコツ」など）を効果的に使ってください。
 
 【出力フォーマット】
-「(ここに教訓のセリフ)」
-- (キャラクターの肩書きや名前など)
+1. (見出し案1)
+2. (見出し案2)
+3. (見出し案3)
 """
         
         response = model.generate_content(prompt)
@@ -40,7 +51,7 @@ def generate_life_lesson():
         return jsonify({'result': formatted_response})
 
     except Exception as e:
-        print(f"教訓の生成中にエラー: {e}")
+        print(f"見出し生成中にエラー: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

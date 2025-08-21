@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>人生の教訓ジェネレーター</title>
+    <title>記事の見出しメーカー</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap');
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Noto Sans JP', sans-serif;
             text-align: center;
             margin: 0;
             padding: 20px;
-            background-color: #1a1a2e; /* 深い夜空の色 */
-            color: #e0e0e0;
+            background-color: #f8f9fa;
+            color: #212529;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -21,74 +21,80 @@
         }
         #app-container {
             width: 100%;
-            max-width: 650px;
+            max-width: 700px;
         }
         h1 {
-            font-family: 'Noto Serif JP', serif;
-            font-weight: 700;
-            color: #f7b733; /* 金色 */
-            text-shadow: 0 0 8px #f7b733;
+            font-weight: 900;
+            color: #343a40;
             font-size: 2.5em;
         }
+        #theme-input {
+            width: 80%;
+            padding: 14px;
+            font-size: 1em;
+            font-family: inherit;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            margin-bottom: 20px;
+            text-align: center;
+        }
         button {
-            padding: 16px 45px;
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #1a1a2e;
-            background: linear-gradient(45deg, #f7b733, #fc4a1a);
+            padding: 14px 40px;
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #fff;
+            background-color: #dc3545; /* 目を引く赤 */
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(247, 183, 51, 0.4);
         }
         button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(252, 74, 26, 0.5);
+            background-color: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
         }
-        #result-container {
-            margin-top: 40px;
-            padding: 40px;
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
+        #result-area {
+            margin-top: 30px;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 8px;
             min-height: 200px;
             line-height: 2.2;
-            text-align: center;
+            text-align: left;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             white-space: pre-wrap;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4em;
-            font-family: 'Noto Serif JP', serif;
-        }
-        #result-text {
-            margin-bottom: 20px;
-        }
-        #byline {
-            font-size: 0.8em;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            color: #aaa;
+            font-size: 1.2em;
         }
         #loading {
             display: none;
-            color: #f7b733;
+            color: #dc3545;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>人生の教訓ジェネレーター</h1>
-        <button id="generate-btn">心に響く教訓を授かる</button>
+        <h1>記事の見出しメーカー</h1>
+        <input type="text" id="theme-input" placeholder="記事のテーマを入力 (例: 最新AI)">
+        <br>
+        <button id="generate-btn">見出しを生成する</button>
         
-        <div id="result-container">
-            <p id="result-text" style="font-size: 1rem; font-weight: normal; font-family: sans-serif; color: #888;">ボタンを押して、魂を揺さぶる言葉を受け取ろう</p>
-            <p id="loading">言の葉を探しています...</p>
+        <div id="result-area">
+            <p id="result-text" style="text-align: center; font-size: 1rem; color: #6c757d;">ここに、読者がクリックしたくなる見出しが3つ提案されます</p>
+            <p id="loading">最高の見出しを考案中...</p>
         </div>
     </div>
 
     <script>
         document.getElementById('generate-btn').addEventListener('click', async () => {
+            const themeInput = document.getElementById('theme-input');
+            const theme = themeInput.value;
+
+            if (!theme.trim()) {
+                alert('記事のテーマを入力してください！');
+                return;
+            }
+
             const resultText = document.getElementById('result-text');
             const loadingElement = document.getElementById('loading');
             const button = document.getElementById('generate-btn');
@@ -98,13 +104,18 @@
             button.disabled = true;
 
             try {
-                const response = await fetch('/generate', { method: 'POST' });
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ theme: theme })
+                });
+
                 const data = await response.json();
 
                 if (data.result) {
                     resultText.textContent = data.result;
                 } else {
-                    resultText.textContent = 'エラー：良い教訓が思いつきませんでした。';
+                    resultText.textContent = 'エラー：良い見出しが思いつきませんでした。';
                 }
             } catch (error) {
                 resultText.textContent = '通信エラーです。';
